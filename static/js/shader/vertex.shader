@@ -1,14 +1,14 @@
-attribute vec4 vertexPosition;
+attribute vec2 vertexPosition;
+attribute vec2 vertexTextureCoordinate;
 
-uniform vec2 screen;
+uniform mat3 transformation;
+uniform mat3 screen;
+
+varying vec2 texcoord;
 
 void main() {
-
-    float x = vertexPosition.x * 2.0 / screen.x - 1.0;
-    float y = vertexPosition.y * 2.0 / screen.y - 1.0;
-
-    gl_Position = vertexPosition;
-
-    gl_Position.x = x;
-    gl_Position.y = y;
+    vec3 vp = vec3(vertexPosition.x, vertexPosition.y, 1);
+    vp = vp * transformation * screen;
+    gl_Position = vec4(vp.x, vp.y, 0, 1);
+    texcoord = vertexTextureCoordinate;
 }

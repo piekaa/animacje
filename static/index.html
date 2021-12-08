@@ -4,15 +4,18 @@
     <meta charset="UTF-8">
     <title>Animacje</title>
 
+    <link rel="icon" href="data:,">
+
     <style>
         canvas {
             width: 95%;
-            height: 95vh;
+            height: 70vh;
         }
 
         .main {
             display: flex;
             justify-content: center;
+            flex-direction: column;
             align-items: center;
         }
 
@@ -23,6 +26,9 @@
 
 <div class="main">
     <canvas id="canvas" width="1920" height="1080"></canvas>
+    <canvas id="font-canvas" width="500" height="500"></canvas>
+    <input id="width" min="1" max="20" value="1" type="range"/>
+    <input id="density" min="3" max="100" value="10" type="range"/>
 </div>
 
 </body>
