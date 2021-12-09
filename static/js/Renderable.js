@@ -1,4 +1,5 @@
 import Matrix2D from "./Matrix.js";
+import GL from "./GL.js";
 
 class Renderable {
 
@@ -9,8 +10,7 @@ class Renderable {
     static fragmentShaders = [];
     static shaderPrograms = [];
 
-    positionBuffer;
-    positionBufferData;
+    vertexData;
 
 
     pivot = Matrix2D.Translation(0, 0)
@@ -138,34 +138,6 @@ class Renderable {
             return;
         }
 
-        const vertexPositionLocation = Renderable.gl.getAttribLocation(this.shaderProgram, 'vertexPosition');
-        const texcoordLocation = Renderable.gl.getAttribLocation(this.shaderProgram, 'vertexTextureCoordinate');
-
-        Renderable.gl.bindBuffer(Renderable.gl.ARRAY_BUFFER, this.positionBuffer);
-        Renderable.gl.bufferData(Renderable.gl.ARRAY_BUFFER, this.positionBufferData, Renderable.gl.STATIC_DRAW);
-
-
-        Renderable.gl.vertexAttribPointer(
-            vertexPositionLocation,
-            2,
-            Renderable.gl.FLOAT,
-            null,
-            16,
-            0
-        );
-
-        Renderable.gl.vertexAttribPointer(
-            texcoordLocation,
-            2,
-            Renderable.gl.FLOAT,
-            null,
-            16,
-            8
-        );
-
-        Renderable.gl.enableVertexAttribArray(vertexPositionLocation);
-        Renderable.gl.enableVertexAttribArray(texcoordLocation);
-
         Renderable.gl.useProgram(this.shaderProgram);
 
         const rect = Renderable.canvas.getBoundingClientRect();
@@ -189,7 +161,7 @@ class Renderable {
             false,
             screen.float32array());
 
-        Renderable.gl.drawArrays(Renderable.gl.TRIANGLE_STRIP, 0, 4);
+        GL.drawTriangleStripPositionAndTexcoord(this.vertexData, "vertexPosition", "vertexTextureCoordinate", this.shaderProgram);
     }
 
 }

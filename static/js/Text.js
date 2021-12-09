@@ -15,11 +15,16 @@ class Text {
     }
 
     render() {
+        let offset = 0;
+        let scale = 0.3;
         for (let i = 0; i < this.letters.length; i++) {
             const l = this.letters[i];
 
-            l.setPosition(100 + 70 * i, 300);
-            l.setScale(0.4 - 0.06 * i, 0.4 - 0.06 * i);
+            offset += l.width/2;
+            l.setPosition(100 + offset * scale, 300);
+            offset += l.width/2;
+
+            l.setScale(scale, scale);
 
             l.setRotation(this.rotation+=0.4);
 

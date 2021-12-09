@@ -9,6 +9,8 @@ class Letter extends TexturedRenderable {
 
     #char;
 
+    width = 0;
+
     constructor(char) {
         super(undefined, "/js/shader/font/fragment.shader");
 
@@ -20,7 +22,6 @@ class Letter extends TexturedRenderable {
             Letter.#fontCanvas.width = 500;
             Letter.#fontCanvas.height = 500;
         }
-
         this.#loadTexture(char)
     }
 
@@ -37,14 +38,18 @@ class Letter extends TexturedRenderable {
         context.fillStyle = "#F00";
         context.fill();
 
-        context.font = '500px serif';
+        let fontSize = 500;
+
+        context.font = `${fontSize}px serif`;
         context.textBaseline = "middle";
         context.fillStyle = "#0F0";
         context.fillText(`${char}`, 0, Letter.#fontCanvas.height / 2);
+        this.width = context.measureText(`${char}`).width;
 
         this.loadImage(Letter.#fontCanvas.toDataURL("image/png"),
-            () => {
+            (img) => {
                 Letter.loadedChars[char] = this.texture;
+                this.setPivot(this.width/2, fontSize/2);
             });
     }
 

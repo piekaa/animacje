@@ -1,7 +1,8 @@
 import Renderable from "./Renderable.js";
 import Texture from "./Texture.js";
+import GL from "./GL.js";
 
-class TexturedRenderable extends Renderable{
+class TexturedRenderable extends Renderable {
 
     static textures = [];
 
@@ -9,7 +10,7 @@ class TexturedRenderable extends Renderable{
 
     constructor(imagePath, fragmentShaderPath = "/js/shader/fragment.shader", vertexShaderPath = "/js/shader/vertex.shader") {
         super(fragmentShaderPath, vertexShaderPath);
-        if(imagePath) {
+        if (imagePath) {
             this.loadImage(imagePath);
         }
     }
@@ -26,14 +27,13 @@ class TexturedRenderable extends Renderable{
                 img.width, img.height, 1, 0,
             ]
 
-            this.setPivot(img.width/2, img.height/2);
+            this.vertexData = GL.createVertexData(pos_and_tex);
 
-            this.positionBuffer = TexturedRenderable.gl.createBuffer();
-            this.positionBufferData = new Float32Array(pos_and_tex);
+            this.setPivot(img.width / 2, img.height / 2);
 
             TexturedRenderable.textures[path] = Texture.createTextureForImage(img, TexturedRenderable.gl);
             this.texture = TexturedRenderable.textures[path];
-            onload();
+            onload(img);
         }
         img.src = path;
         return img;
