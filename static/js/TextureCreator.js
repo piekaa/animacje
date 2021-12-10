@@ -1,4 +1,4 @@
-class Texture {
+class TextureCreator {
 
 
     static createTextureForImage(img, gl) {
@@ -9,7 +9,7 @@ class Texture {
         // WebGL1 has different requirements for power of 2 images
         // vs non power of 2 images so check if the image is a
         // power of 2 in both dimensions.
-        if (Texture.#isPowerOf2(img.width) && Texture.#isPowerOf2(img.height)) {
+        if (TextureCreator.#isPowerOf2(img.width) && TextureCreator.#isPowerOf2(img.height)) {
             // Yes, it's a power of 2. Generate mips.
             gl.generateMipmap(gl.TEXTURE_2D);
         } else {
@@ -32,4 +32,4 @@ class Texture {
 
 }
 
-export default Texture
+export default TextureCreator

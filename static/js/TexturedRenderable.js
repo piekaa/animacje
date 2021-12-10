@@ -1,5 +1,5 @@
 import Renderable from "./Renderable.js";
-import Texture from "./Texture.js";
+import TextureCreator from "./TextureCreator.js";
 import GL from "./GL.js";
 
 class TexturedRenderable extends Renderable {
@@ -31,7 +31,7 @@ class TexturedRenderable extends Renderable {
 
             this.setPivot(img.width / 2, img.height / 2);
 
-            TexturedRenderable.textures[path] = Texture.createTextureForImage(img, TexturedRenderable.gl);
+            TexturedRenderable.textures[path] = GL.createTextureForImage(img);
             this.texture = TexturedRenderable.textures[path];
             onload(img);
         }
