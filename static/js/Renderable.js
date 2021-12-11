@@ -7,6 +7,12 @@ class Renderable {
 
     vertexData;
 
+    visible = true;
+    parent = undefined;
+    children = [];
+
+    zIndex = 0;
+
     pivot = Matrix2D.Translation(0, 0)
     position = Matrix2D.Translation(0, 0);
     rotation = Matrix2D.Rotation(0);
@@ -49,9 +55,14 @@ class Renderable {
         return undefined;
     }
 
-    updateTransformation() {
+    update() {
+
+    }
+
+    updateTransformation(parentTransform = Matrix2D.Identity(), pivot = Matrix2D.Translation(0,0)) {
         this.transformation =
-            this.position
+            parentTransform.multiply(pivot.minusXY())
+                .multiply(this.position)
                 .multiply(this.scale)
                 .multiply(this.rotation)
                 .multiply(this.pivot);
@@ -59,12 +70,10 @@ class Renderable {
     }
 
     render() {
-        if (!this.isReady()) {
+        if (!this.isReady() || !this.visible || !this.shaderProgram) {
             return;
         }
-        if (!this.shaderProgram) {
-            return;
-        }
+
         GL.useShader(this.shaderProgram);
         const rect = Renderable.canvas.getBoundingClientRect();
         const texture = this.getTexture();
@@ -76,7 +85,6 @@ class Renderable {
         GL.applyMatrix(screen, "screen");
         GL.drawTriangleStripPositionAndTexcoord(this.vertexData, "vertexPosition", "vertexTextureCoordinate");
     }
-
 }
 
 export default Renderable

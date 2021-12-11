@@ -86,6 +86,10 @@ class Matrix2D {
         return this.#v[5];
     }
 
+    minusXY() {
+        return Matrix2D.Translation(-this.x(), -this.y());
+    }
+
     #mulRowColumn(m1, m2, row, column) {
 
         m1 = m1.#v;

@@ -26,8 +26,6 @@ class GL {
                 .then(text => fragmentShaderSource = text)
                 .then(() => resolve(GL.#createShaderProgram(vertexShaderSource, fragmentShaderSource)));
         }));
-
-
     }
 
     static #createShaderProgram(vertexShaderSource, fragmentShaderSource) {
@@ -132,13 +130,6 @@ class GL {
         return new VertexData(data, gl.createBuffer(), new Float32Array(data));
     }
 
-    static enableAlphaBlend() {
-        const gl = GL.#getGl();
-
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    }
-
     static clearToColor(r = 0, g = 0, b = 0) {
         const gl = GL.#getGl();
 
@@ -149,11 +140,11 @@ class GL {
     static #getGl() {
         if (!GL.#gl) {
             GL.#gl = document.getElementById("canvas").getContext("webgl");
+            GL.#gl.enable(GL.#gl.BLEND);
+            GL.#gl.blendFunc(GL.#gl.SRC_ALPHA, GL.#gl.ONE_MINUS_SRC_ALPHA);
         }
         return this.#gl;
     }
-
-
 }
 
 export default GL

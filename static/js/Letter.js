@@ -47,7 +47,7 @@ class Letter extends TexturedRenderable {
         this.width = context.measureText(`${char}`).width;
 
         this.loadImage(Letter.#fontCanvas.toDataURL("image/png"),
-            (img) => {
+            () => {
                 Letter.loadedChars[char] = this.texture;
                 this.setPivot(this.width/2, fontSize/2);
             });

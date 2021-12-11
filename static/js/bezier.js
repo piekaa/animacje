@@ -39,9 +39,6 @@ class Bezier {
         result.push(v1.add(normal), v2.add(normal), v1.add(minusNormal));
         result.push(v1.add(minusNormal), v2.add(normal), v2.add(minusNormal));
 
-        // result.push(v1.add(normal), v2.add(normal), v1);
-        // result.push(v1, v2.add(normal), v2);
-
         return result;
     }
 }

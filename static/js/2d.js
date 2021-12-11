@@ -1,20 +1,54 @@
-import Text from "./Text.js";
 import GL from "./GL.js";
+import Renderable from "./Renderable.js";
 
 class PiekoszekEngine {
 
-    #text
+    static #rootRenderable;
+    static #behaviours = [];
 
-    constructor(canvas) {
-        GL.enableAlphaBlend();
-        this.#text = new Text("Piekoszek");
-        setInterval(this.#update.bind(this), 30);
+    static start() {
+        PiekoszekEngine.#rootRenderable = new Renderable();
+        PiekoszekEngine.#rootRenderable.visible = false;
+        setInterval(this.#update, 30);
     }
 
+    static add(renderable) {
+        PiekoszekEngine.#rootRenderable.children.push(renderable);
+        renderable.parent = PiekoszekEngine.#rootRenderable;
+    }
 
-    #update() {
+    static addAsChild(parent, child) {
+        parent.children.push(child);
+        child.parent = parent;
+    }
+
+    static addBehaviour(behaviourFunction) {
+        PiekoszekEngine.#behaviours.push(behaviourFunction);
+    }
+
+    static #update() {
+
+        let queue = [];
+        let renderables = [];
+        queue.push(PiekoszekEngine.#rootRenderable);
+
+        PiekoszekEngine.#behaviours.forEach(b => b());
+
+        while (queue.length > 0) {
+            let r = queue.shift();
+            r.children.forEach(c => {
+                c.update();
+                c.updateTransformation(r.transformation, r.pivot);
+            });
+            renderables.push(r);
+            queue.push(...r.children);
+        }
+        renderables.sort((a, b) => a.zIndex - b.zIndex);
+
         GL.clearToColor();
-        this.#text.render();
+        renderables.forEach(r => r.render());
+
+
     }
 }
 
