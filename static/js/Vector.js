@@ -95,11 +95,7 @@ class Vector {
         return Vector.Direction(this.x, this.y, vector.x, vector.y);
     }
 
-    normal(vector) {
-        return this.direction(vector).#n();
-    }
-
-    #n() {
+    normal() {
         return new Vector(-this.y, this.x);
     }
 

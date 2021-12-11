@@ -7,10 +7,11 @@ class Renderable {
 
     vertexData;
 
-    visible = true;
+    visible = false;
     parent = undefined;
     children = [];
 
+    // todo zIndex na tym samym poziomie hierarchii (cześćciowo dziedziczony od rodziców)
     zIndex = 0;
 
     pivot = Matrix2D.Translation(0, 0)
@@ -22,13 +23,22 @@ class Renderable {
 
     shaderProgram;
 
-    constructor(fragmentShaderPath = "/js/shader/fragment.shader", vertexShaderPath = "/js/shader/vertex.shader") {
+    color = [1, 1, 1, 1];
+
+    useTexcoord = false;
+    triangleStrip = true;
+
+    constructor(fragmentShaderPath = "/js/shader/untexturedFragment.shader", vertexShaderPath = "/js/shader/vertex.shader") {
         if (!Renderable.canvas) {
             Renderable.canvas = document.getElementById("canvas");
         }
 
         GL.createShaderProgramPromise(fragmentShaderPath, vertexShaderPath)
             .then(shader => this.shaderProgram = shader);
+    }
+
+    show() {
+        this.visible = true;
     }
 
     setPosition(x, y) {
@@ -48,7 +58,7 @@ class Renderable {
     }
 
     isReady() {
-
+        return this.shaderProgram;
     }
 
     getTexture() {
@@ -59,7 +69,7 @@ class Renderable {
 
     }
 
-    updateTransformation(parentTransform = Matrix2D.Identity(), pivot = Matrix2D.Translation(0,0)) {
+    updateTransformation(parentTransform = Matrix2D.Identity(), pivot = Matrix2D.Translation(0, 0)) {
         this.transformation =
             parentTransform.multiply(pivot.minusXY())
                 .multiply(this.position)
@@ -83,7 +93,17 @@ class Renderable {
         const screen = Matrix2D.Scale(2 / rect.width, 2 / rect.height).multiply(Matrix2D.Translation(-rect.width / 2, -rect.height / 2));
         GL.applyMatrix(this.transformation, "transformation");
         GL.applyMatrix(screen, "screen");
-        GL.drawTriangleStripPositionAndTexcoord(this.vertexData, "vertexPosition", "vertexTextureCoordinate");
+        GL.applyColor(this.color);
+
+        if (this.useTexcoord) {
+            GL.drawTriangleStripPositionAndTexcoord(this.vertexData, "vertexPosition", "vertexTextureCoordinate");
+        } else {
+            if (this.triangleStrip) {
+                GL.drawTriangleStripVertexPosition(this.vertexData, "vertexPosition");
+            } else {
+                GL.drawTriangleVertexPosition(this.vertexData, "vertexPosition");
+            }
+        }
     }
 }
 

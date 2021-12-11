@@ -6,6 +6,11 @@ class PiekoszekEngine {
     static #rootRenderable;
     static #behaviours = [];
 
+    static removeAll() {
+        PiekoszekEngine.#rootRenderable = new Renderable();
+        PiekoszekEngine.#rootRenderable.visible = false;
+    }
+
     static start() {
         PiekoszekEngine.#rootRenderable = new Renderable();
         PiekoszekEngine.#rootRenderable.visible = false;

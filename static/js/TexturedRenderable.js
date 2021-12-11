@@ -1,5 +1,4 @@
 import Renderable from "./Renderable.js";
-import TextureCreator from "./TextureCreator.js";
 import GL from "./GL.js";
 
 class TexturedRenderable extends Renderable {
@@ -13,6 +12,7 @@ class TexturedRenderable extends Renderable {
         if (imagePath) {
             this.loadImage(imagePath);
         }
+        this.useTexcoord = true;
     }
 
     loadImage(path, onload) {

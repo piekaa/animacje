@@ -9,7 +9,17 @@
     <style>
         canvas {
             width: 95%;
-            height: 90vh;
+            height: 65vh;
+        }
+
+        textarea {
+            width: 80%;
+            height: 30vh;
+            font-size: 2em;
+        }
+
+        button {
+            height: 40px;
         }
 
         .main {
@@ -19,16 +29,27 @@
             align-items: center;
         }
 
+        .editor {
+            width: 95%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
     </style>
 
 </head>
 <body>
 
 <div class="main">
+
+    <div class="editor">
+        <textarea id="code" spellcheck="false"></textarea>
+        <button id="compiler">Kompiluj</button>
+    </div>
     <canvas id="canvas" width="1920" height="1080"></canvas>
     <canvas id="font-canvas" width="500" height="500"></canvas>
-    <input id="width" min="1" max="20" value="1" type="range"/>
-    <input id="density" min="3" max="100" value="10" type="range"/>
 </div>
 
 </body>

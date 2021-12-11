@@ -33,7 +33,7 @@ class Bezier {
         const v1 = new Vector(p1.x, p1.y);
         const v2 = new Vector(p2.x, p2.y);
 
-        const normal = v1.normal(v2).normalized().multiply(width / 2);
+        const normal = v1.direction(v2).normal().normalized().multiply(width / 2);
         const minusNormal = normal.multiply(-1);
 
         result.push(v1.add(normal), v2.add(normal), v1.add(minusNormal));

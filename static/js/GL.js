@@ -73,6 +73,13 @@ class GL {
         gl.useProgram(shader);
     }
 
+    static applyColor(color) {
+        const gl = GL.#getGl();
+        gl.uniform4fv(
+            gl.getUniformLocation(this.#currentShader, "color"),
+            new Float32Array(color));
+    }
+
     static applyMatrix(matrix, variableName) {
         const gl = GL.#getGl();
         gl.uniformMatrix3fv(
@@ -86,6 +93,39 @@ class GL {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.uniform1i(gl.getUniformLocation(this.#currentShader, variableName), 0)
+    }
+
+    static drawTriangleVertexPosition(vertexData, vertexPositionVariableName) {
+        const gl = GL.#getGl();
+        GL.#drawTriangles(vertexData, vertexPositionVariableName, gl.TRIANGLES);
+    }
+
+    static drawTriangleStripVertexPosition(vertexData, vertexPositionVariableName) {
+        const gl = GL.#getGl();
+        GL.#drawTriangles(vertexData, vertexPositionVariableName, gl.TRIANGLE_STRIP);
+    }
+
+    static #drawTriangles(vertexData, vertexPositionVariableName, triangleType) {
+        const gl = GL.#getGl();
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexData.getBuffer());
+        gl.bufferData(gl.ARRAY_BUFFER, vertexData.getBufferData(), gl.STATIC_DRAW);
+
+        const vertexPositionLocation = gl.getAttribLocation(this.#currentShader, vertexPositionVariableName);
+
+
+        gl.vertexAttribPointer(
+            vertexPositionLocation,
+            2,
+            gl.FLOAT,
+            null,
+            8,
+            0
+        );
+
+        gl.enableVertexAttribArray(vertexPositionLocation);
+
+        gl.drawArrays(triangleType, 0, vertexData.getLength() / 2);
     }
 
     static drawTriangleStripPositionAndTexcoord(vertexData,
