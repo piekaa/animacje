@@ -6,6 +6,10 @@ class PiekoszekEngine {
     static #rootRenderable;
     static #behaviours = [];
 
+    static root() {
+        return this.#rootRenderable;
+    }
+
     static removeAll() {
         PiekoszekEngine.#rootRenderable = new Renderable();
         PiekoszekEngine.#rootRenderable.visible = false;
@@ -14,7 +18,7 @@ class PiekoszekEngine {
     static start() {
         PiekoszekEngine.#rootRenderable = new Renderable();
         PiekoszekEngine.#rootRenderable.visible = false;
-        setInterval(this.#update, 30);
+        setInterval(this.#update, 200);
     }
 
     static add(renderable) {
@@ -32,7 +36,6 @@ class PiekoszekEngine {
     }
 
     static #update() {
-
         let queue = [];
         let renderables = [];
         queue.push(PiekoszekEngine.#rootRenderable);
@@ -52,8 +55,6 @@ class PiekoszekEngine {
 
         GL.clearToColor();
         renderables.forEach(r => r.render());
-
-
     }
 }
 

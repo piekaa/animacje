@@ -8,12 +8,14 @@ class Renderable {
     vertexData;
 
     visible = false;
+
     parent = undefined;
     children = [];
 
     // todo zIndex na tym samym poziomie hierarchii (cześćciowo dziedziczony od rodziców)
     zIndex = 0;
 
+    origin = Matrix2D.Translation(0, 0);
     pivot = Matrix2D.Translation(0, 0)
     position = Matrix2D.Translation(0, 0);
     rotation = Matrix2D.Rotation(0);
@@ -57,6 +59,10 @@ class Renderable {
         this.pivot = Matrix2D.Translation(-px, -py);
     }
 
+    setOrigin(ox, oy) {
+        this.origin = Matrix2D.Translation(ox, oy);
+    }
+
     isReady() {
         return this.shaderProgram;
     }
@@ -69,9 +75,10 @@ class Renderable {
 
     }
 
-    updateTransformation(parentTransform = Matrix2D.Identity(), pivot = Matrix2D.Translation(0, 0)) {
+    updateTransformation(parentTransform = Matrix2D.Identity(), parentPivot = Matrix2D.Translation(0, 0)) {
         this.transformation =
-            parentTransform.multiply(pivot.minusXY())
+            parentTransform.multiply(parentPivot)
+                .multiply(this.origin)
                 .multiply(this.position)
                 .multiply(this.scale)
                 .multiply(this.rotation)
