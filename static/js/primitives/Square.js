@@ -15,7 +15,7 @@ class Square extends Renderable {
         this.setPosition(x,y);
         this.setPivot(size/2, size/2);
 
-        // this.visible = true;
+        this.visible = true;
     }
 }
 

@@ -46,8 +46,8 @@ class Compiler {
 
     static #parseLine(line, parent, pivot) {
 
-        if( line.startsWith("//")) {
-            return ;
+        if (line.startsWith("//")) {
+            return;
         }
 
         const l = line.replace(/\s/g, '');
@@ -91,8 +91,7 @@ class Compiler {
         if (definition) {
             const complexObject = new StandardRenderable(...args);
             Compiler.#compile(definition, complexObject);
-            complexObject.setPivot(pivot.position.x(), pivot.position.y());
-            // complexObject.setOrigin(pivot.position.x(), pivot.position.y());
+            complexObject.setPivot(pivot.position.x() / 2, pivot.position.y() / 2);
             PiekoszekEngine.addAsChild(parent, complexObject);
             return complexObject;
         }

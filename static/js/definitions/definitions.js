@@ -11,7 +11,9 @@ pivot.color = [0.2, 1, 0.2, 0.6];
 pivot.zIndex = 10000;
 PiekoszekEngine.add(pivot);
 
-document.getElementById("compileButton").onclick = () => {
+document.getElementById("compileButton").onclick = compile;
+
+function compile() {
     const name = document.getElementById("definitionName").value;
     const code = document.getElementById("code").value;
     Compiler.compile(code, pivot)
@@ -32,6 +34,7 @@ function loadDefinitions() {
                         .then(code => {
                             document.getElementById("definitionName").value = name;
                             document.getElementById("code").value = code;
+                            compile();
                         });
                 };
                 definitions.appendChild(button);
