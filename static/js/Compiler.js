@@ -1,7 +1,8 @@
 import Line from "./primitives/Line.js";
-import PiekoszekEngine from "./2d.js";
+import PiekoszekEngine from "./PiekoszekEngine.js";
 import DefinitionStorage from "./definitions/DefinitionStorage.js";
 import StandardRenderable from "./StandardRenderable.js";
+import Animator from "./animation/Animator.js";
 
 // todo wykrywanie cyklicznych zależności
 // todo napisywanie zmiennych
@@ -22,6 +23,7 @@ class Compiler {
             PiekoszekEngine.removeAll();
             DefinitionStorage.loadAll().then(definitions => {
                 Compiler.#definitions = definitions;
+                this.#variables["a"] = new Animator();
                 Compiler.#compile(code, PiekoszekEngine.root(), pivot);
                 resolve();
             });
@@ -65,12 +67,14 @@ class Compiler {
             Compiler.#variables[varName] = obj;
             return obj;
         } else {
-            const sp = l.split(/[.(,)]/);
+            const firstDotIndex = l.indexOf(".");
+            const variableName = l.substring(0, firstDotIndex)
+            const sp = l.substring(firstDotIndex + 1, l.length).split(/[(,)]/);
+
             sp.pop();
             if (l.includes("()")) {
                 sp.pop();
             }
-            const variableName = sp.shift();
             const functionName = sp.shift();
             const args = Compiler.#parseArgs(sp);
             const obj = Compiler.#variables[variableName];
@@ -101,11 +105,15 @@ class Compiler {
 
     static #parseArgs(args) {
         return args.map(arg => {
+
+            if (this.#variables[arg]) {
+                return this.#variables[arg];
+            }
+
             if (arg.startsWith(`"`)) {
                 return arg.substring(1, arg.length - 1);
-            } else {
-                return parseFloat(arg);
             }
+            return parseFloat(arg);
         });
     }
 

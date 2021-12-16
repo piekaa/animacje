@@ -43,6 +43,14 @@ class Renderable {
         this.visible = true;
     }
 
+    hide() {
+        this.visible = false;
+    }
+
+    isVisible() {
+        return this.visible && (this.parent === undefined || this.parent.isVisible());
+    }
+
     setPosition(x, y) {
         this.position = Matrix2D.Translation(x, y);
     }
@@ -87,7 +95,7 @@ class Renderable {
     }
 
     render() {
-        if (!this.isReady() || !this.visible || !this.shaderProgram) {
+        if (!this.isReady() || !this.isVisible() || !this.shaderProgram) {
             return;
         }
 

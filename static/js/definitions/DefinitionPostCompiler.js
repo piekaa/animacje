@@ -1,4 +1,4 @@
-import PiekoszekEngine from "../2d.js";
+import PiekoszekEngine from "../PiekoszekEngine.js";
 import DefinitionStorage from "./DefinitionStorage.js";
 
 class DefinitionPostCompiler {

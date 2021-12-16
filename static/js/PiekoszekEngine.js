@@ -3,6 +3,8 @@ import Renderable from "./Renderable.js";
 
 class PiekoszekEngine {
 
+    static FPS = 30;
+
     static #rootRenderable;
     static #behaviours = [];
 
@@ -12,13 +14,16 @@ class PiekoszekEngine {
 
     static removeAll() {
         PiekoszekEngine.#rootRenderable = new Renderable();
-        PiekoszekEngine.#rootRenderable.visible = false;
+        PiekoszekEngine.#rootRenderable.visible = true;
+        PiekoszekEngine.#rootRenderable.isReady = () => {
+            return false;
+        }
     }
 
     static start() {
         PiekoszekEngine.#rootRenderable = new Renderable();
         PiekoszekEngine.#rootRenderable.visible = false;
-        setInterval(this.#update, 200);
+        setInterval(this.#update, 33);
     }
 
     static add(renderable) {
@@ -31,6 +36,8 @@ class PiekoszekEngine {
         child.parent = parent;
     }
 
+
+    //todo remove behaviour
     static addBehaviour(behaviourFunction) {
         PiekoszekEngine.#behaviours.push(behaviourFunction);
     }
