@@ -1,9 +1,9 @@
-import Renderable from "../Renderable.js";
 import GL from "../GL.js";
 import Vector from "../Vector.js";
 import PiekoszekMath from "../math.js";
+import AnimatedRenderable from "../animation/AnimatedRenderable.js";
 
-class Line extends Renderable {
+class Line extends AnimatedRenderable {
 
     constructor(startX, startY, endX, endY, width = 1) {
         super()

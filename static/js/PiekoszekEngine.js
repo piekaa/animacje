@@ -6,6 +6,8 @@ class PiekoszekEngine {
     static FPS = 30;
 
     static #rootRenderable;
+
+    //todo think of way to remove behaviours
     static #behaviours = [];
 
     static root() {

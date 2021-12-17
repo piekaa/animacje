@@ -1,11 +1,11 @@
 import Line from "./primitives/Line.js";
 import PiekoszekEngine from "./PiekoszekEngine.js";
 import DefinitionStorage from "./definitions/DefinitionStorage.js";
-import StandardRenderable from "./StandardRenderable.js";
+import StandardRenderable from "./animation/StandardRenderable.js";
 import Animator from "./animation/Animator.js";
 
 // todo wykrywanie cyklicznych zależności
-// todo napisywanie zmiennych
+// todo nadpisywanie zmiennych
 
 class Compiler {
 
@@ -25,7 +25,7 @@ class Compiler {
                 Compiler.#definitions = definitions;
                 this.#variables["a"] = new Animator();
                 Compiler.#compile(code, PiekoszekEngine.root(), pivot);
-                resolve();
+                resolve(this.#variables["a"]);
             });
         });
 

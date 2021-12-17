@@ -1,8 +1,8 @@
-import Renderable from "../Renderable.js";
 import Gl from "../GL.js";
+import AnimatedRenderable from "../animation/AnimatedRenderable.js";
 
-class Square extends Renderable {
-    constructor(x,y, size) {
+class Square extends AnimatedRenderable {
+    constructor(x, y, size) {
         super();
 
         this.vertexData = Gl.createVertexData([
@@ -12,8 +12,8 @@ class Square extends Renderable {
             size, size,
         ]);
 
-        this.setPosition(x,y);
-        this.setPivot(size/2, size/2);
+        this.setPosition(x, y);
+        this.setPivot(size / 2, size / 2);
 
         this.visible = true;
     }

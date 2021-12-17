@@ -1,4 +1,3 @@
-import PiekoszekEngine from "../PiekoszekEngine.js";
 import LinearInterpolator from "./LinearInterpolator.js";
 
 class Move {
@@ -23,19 +22,18 @@ class Move {
     start() {
         this.#startX = this.#obj.position.x();
         this.#startY = this.#obj.position.y();
-        PiekoszekEngine.addBehaviour(() => {
+    }
 
-            //todo remove behaviour instead
-            if (this.#currentFrame > this.#totalFrames) {
-                return
-            }
+    updateFrame() {
+        if (this.#currentFrame > this.#totalFrames) {
+            return
+        }
 
-            this.#currentFrame++;
-            const p = this.#currentFrame / this.#totalFrames;
-            this.#obj.setPosition(
-                this.#interpolator.interpolate(this.#startX, this.#endX, p),
-                this.#interpolator.interpolate(this.#startY, this.#endY, p))
-        });
+        this.#currentFrame++;
+        const p = this.#currentFrame / this.#totalFrames;
+        this.#obj.setFramePosition(
+            this.#interpolator.interpolate(this.#startX, this.#endX, p),
+            this.#interpolator.interpolate(this.#startY, this.#endY, p));
     }
 
 }
