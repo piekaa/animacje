@@ -25,7 +25,7 @@ class Move {
     }
 
     updateFrame() {
-        if (this.#currentFrame > this.#totalFrames) {
+        if (this.#currentFrame >= this.#totalFrames) {
             return
         }
 

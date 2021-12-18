@@ -24,7 +24,6 @@ class Animator {
         const toSkip = this.#timeToFrames(time);
         for (let i = 0; i < toSkip; i++) {
             this.updateFrame();
-            console.log("skipping...");
         }
     }
 
