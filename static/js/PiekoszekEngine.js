@@ -9,12 +9,34 @@ class PiekoszekEngine {
 
     //todo think of way to remove behaviours
     static #behaviours = [];
+    static #behavioursAfterTransformation = [];
+
+    static #renderablesToRemove = []
+    ''
+
+    static #protectedRenderables = [];
 
     static root() {
         return this.#rootRenderable;
     }
 
     static removeAll() {
+        PiekoszekEngine.#createRootRenderable();
+        this.#protectedRenderables.forEach(r => {
+            PiekoszekEngine.add(r);
+        })
+    }
+
+    static start() {
+        PiekoszekEngine.#createRootRenderable();
+        // setInterval(this.#update, 33);
+        setInterval(this.#update, 41);
+        // setInterval(this.#update, 233);
+        // setInterval(this.#update, 5033);
+
+    }
+
+    static #createRootRenderable() {
         PiekoszekEngine.#rootRenderable = new Renderable();
         PiekoszekEngine.#rootRenderable.visible = true;
         PiekoszekEngine.#rootRenderable.isReady = () => {
@@ -22,15 +44,14 @@ class PiekoszekEngine {
         }
     }
 
-    static start() {
-        PiekoszekEngine.#rootRenderable = new Renderable();
-        PiekoszekEngine.#rootRenderable.visible = false;
-        setInterval(this.#update, 33);
-    }
-
-    static add(renderable) {
+    static add(renderable, isPotected = false) {
         PiekoszekEngine.#rootRenderable.children.push(renderable);
         renderable.parent = PiekoszekEngine.#rootRenderable;
+
+        if (isPotected) {
+            PiekoszekEngine.#protectedRenderables.push(renderable);
+        }
+
     }
 
     static addAsChild(parent, child) {
@@ -38,18 +59,30 @@ class PiekoszekEngine {
         child.parent = parent;
     }
 
+    static remove(renderable) {
+        renderable.visible = false;
+        PiekoszekEngine.#renderablesToRemove.push(renderable);
+    }
 
     //todo remove behaviour
     static addBehaviour(behaviourFunction) {
         PiekoszekEngine.#behaviours.push(behaviourFunction);
     }
 
+    //todo remove behaviour
+    static addBehaviourAfterTransformation(behaviourFunction) {
+        PiekoszekEngine.#behavioursAfterTransformation.push(behaviourFunction);
+    }
+
     static #update() {
         let queue = [];
         let renderables = [];
-        queue.push(PiekoszekEngine.#rootRenderable);
+
 
         PiekoszekEngine.#behaviours.forEach(b => b());
+
+        queue.push(PiekoszekEngine.#rootRenderable);
+
 
         while (queue.length > 0) {
             let r = queue.shift();
@@ -62,8 +95,18 @@ class PiekoszekEngine {
         }
         renderables.sort((a, b) => a.zIndex - b.zIndex);
 
+        PiekoszekEngine.#behavioursAfterTransformation.forEach(b => b());
+
+
         GL.clearToColor();
+
+
         renderables.forEach(r => r.render());
+
+        PiekoszekEngine.#renderablesToRemove.forEach(toRemove => {
+            toRemove.parent.children = toRemove.parent.children.filter(r => r.getId() !== toRemove.getId());
+        });
+        PiekoszekEngine.#renderablesToRemove = [];
     }
 }
 

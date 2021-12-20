@@ -2,6 +2,7 @@ import PiekoszekEngine from "../PiekoszekEngine.js";
 import Move from "./Move.js";
 import SmoothInterpolator from "./SmoothInterpolator.js";
 import WiggleInterpolator from "./WiggleInterpolator.js";
+import Call from "./Call.js";
 
 class Animator {
 
@@ -27,13 +28,18 @@ class Animator {
         }
     }
 
+    // Z TYM UWAZAC
+    call(obj, fun, ...params) {
+        this.allObjects.add(new Call(obj, fun, this.frame, params));
+    }
+
     move(obj, x, y, time) {
         this.#initObjectIfNew(obj);
         const framesDuration = this.#timeToFrames(time);
         this.lastFrame = this.frame + framesDuration;
         const move = new Move(obj, x, y, framesDuration);
         this.allActions.add(move);
-        move.start();
+        move.start(this.frame);
         this.#addToDoAtFrame(move);
     }
 
@@ -43,7 +49,7 @@ class Animator {
         this.lastFrame = this.frame + framesDuration;
         const move = new Move(obj, x, y, framesDuration, new SmoothInterpolator());
         this.allActions.add(move);
-        move.start();
+        move.start(this.frame);
         this.#addToDoAtFrame(move);
     }
 
@@ -53,7 +59,7 @@ class Animator {
         this.lastFrame = this.frame + framesDuration;
         const move = new Move(obj, x, y, framesDuration, new WiggleInterpolator());
         this.allActions.add(move);
-        move.start();
+        move.start(this.frame);
         this.#addToDoAtFrame(move);
     }
 

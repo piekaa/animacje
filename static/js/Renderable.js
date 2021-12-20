@@ -1,7 +1,16 @@
 import Matrix2D from "./Matrix.js";
 import GL from "./GL.js";
+import Vector from "./Vector.js";
 
 class Renderable {
+
+    #id
+
+    static #nextId = 0;
+
+    getId() {
+        return this.#id;
+    }
 
     static canvas;
 
@@ -21,6 +30,8 @@ class Renderable {
     rotation = Matrix2D.Rotation(0);
     scale = Matrix2D.Scale(1, 1);
 
+    worldPositionVector = new Vector(0, 0)
+
     transformation = Matrix2D.Identity();
 
     shaderProgram;
@@ -31,12 +42,16 @@ class Renderable {
     triangleStrip = true;
 
     constructor(fragmentShaderPath = "/js/shader/untexturedFragment.shader", vertexShaderPath = "/js/shader/vertex.shader") {
+        this.#id = Renderable.#nextId++;
+
         if (!Renderable.canvas) {
             Renderable.canvas = document.getElementById("canvas");
         }
 
         GL.createShaderProgramPromise(fragmentShaderPath, vertexShaderPath)
-            .then(shader => this.shaderProgram = shader);
+            .then(shader => {
+                this.shaderProgram = shader
+            });
     }
 
     show() {
@@ -71,6 +86,10 @@ class Renderable {
         this.origin = Matrix2D.Translation(ox, oy);
     }
 
+    setColor(r = 1, g = 1, b = 1, a = 1) {
+        this.color = [r, g, b, a];
+    }
+
     isReady() {
         return this.shaderProgram;
     }
@@ -92,9 +111,14 @@ class Renderable {
                 .multiply(this.rotation)
                 .multiply(this.pivot);
 
+        //todo this might not work with scaled object
+        const worldPosition = this.transformation.multiply(this.pivot.minusXY());
+        this.worldPositionVector = new Vector(worldPosition.x(), worldPosition.y());
+
     }
 
     render() {
+
         if (!this.isReady() || !this.isVisible() || !this.shaderProgram) {
             return;
         }
@@ -109,6 +133,7 @@ class Renderable {
         GL.applyMatrix(this.transformation, "transformation");
         GL.applyMatrix(screen, "screen");
         GL.applyColor(this.color);
+
 
         if (this.useTexcoord) {
             GL.drawTriangleStripPositionAndTexcoord(this.vertexData, "vertexPosition", "vertexTextureCoordinate");

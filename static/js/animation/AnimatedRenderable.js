@@ -61,6 +61,10 @@ class AnimatedRenderable extends Renderable {
         this.scale = this.valuesAtFrame[frame].scale;
     }
 
+    getValuesAtFrame(frame) {
+        return this.valuesAtFrame[frame];
+    }
+
 }
 
 export default AnimatedRenderable

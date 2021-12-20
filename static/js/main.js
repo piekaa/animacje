@@ -1,8 +1,12 @@
 import PiekoszekEngine from "./PiekoszekEngine.js";
 import Compiler from "./Compiler.js";
 import Square from "./primitives/Square.js";
+import ClothSimulator from "./cloth/ClothSimulator.js";
 
 PiekoszekEngine.start();
+
+const cs = new ClothSimulator();
+cs.start();
 
 const pivot = new Square(100, 100, 10);
 pivot.visible = false;
@@ -14,7 +18,7 @@ let animator;
 let progress = document.getElementById("progress");
 
 document.getElementById("compiler").onclick = () => {
-    Compiler.compile(document.getElementById("code").value, pivot)
+    Compiler.compile(document.getElementById("code").value, pivot, [{name: "cs", value: cs}])
         .then(a => {
             a.completeRemainingFrames();
             progress.min = 0;
@@ -31,6 +35,9 @@ progress.oninput = (event) => {
 
 document.getElementById("play").onclick = () => {
     let frame = 0;
+
+    document.getElementById("canvas").requestFullscreen();
+
     PiekoszekEngine.addBehaviour(() => {
         if (frame <= progress.max) {
             progress.value = frame;
@@ -43,3 +50,8 @@ document.getElementById("play").onclick = () => {
         frame++;
     });
 };
+
+
+document.getElementById("canvas").addEventListener("mousedown", (event) => {
+    document.getElementById("mouse").value = `${event.offsetX}, ${event.target.offsetHeight - event.offsetY}`;
+}, false);

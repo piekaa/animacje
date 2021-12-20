@@ -41,6 +41,8 @@ class Line extends AnimatedRenderable {
         this.triangleStrip = false;
 
         this.color = [1, 1, 1, 1];
+
+        this.visible = true;
     }
 }
 

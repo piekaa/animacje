@@ -24,9 +24,9 @@ class DefinitionStorage {
 
     static loadAll() {
         return new Promise(resolve => {
-            const names = localStorage.getItem("__allNames").split(",");
+            const names = localStorage.getItem("__allNames")?.split(",");
             let result = [];
-            names.forEach(name => {
+            names?.forEach(name => {
                 result[name] = localStorage.getItem(name);
             });
             resolve(result);

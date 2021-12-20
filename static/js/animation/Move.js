@@ -19,9 +19,10 @@ class Move {
         this.#interpolator = interpolator;
     }
 
-    start() {
-        this.#startX = this.#obj.position.x();
-        this.#startY = this.#obj.position.y();
+    start(frame) {
+        frame = Math.max(frame-1, 0);
+        this.#startX = this.#obj.getValuesAtFrame(frame).position.x();
+        this.#startY = this.#obj.getValuesAtFrame(frame).position.y();
     }
 
     updateFrame() {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Animations</title>
+    <title>Text</title>
 
     <link rel="icon" href="data:,">
 
@@ -15,7 +15,7 @@
         textarea {
             width: 80%;
             height: 30vh;
-            font-size: 1em;
+            font-size: 2em;
         }
 
         button {
@@ -33,23 +33,12 @@
             width: 95%;
             display: flex;
             justify-content: space-between;
-            align-items: stretch;
+            align-items: center;
             margin-bottom: 16px;
         }
 
         .progress {
             width: 80%;
-        }
-
-        .right {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .right input {
-            height: 30px;
-            width: 100px;
         }
 
     </style>
@@ -59,23 +48,13 @@
 
 <div class="main">
 
-    <div class="editor">
-        <textarea id="code" spellcheck="false"></textarea>
-        <div class="right">
-            <input id="mouse">
-            <button id="compiler">Compile</button>
-        </div>
-    </div>
     <canvas id="canvas" width="1920" height="1080"></canvas>
-
-    <input id="progress" class="progress" type="range">
-    <button id="play">Play</button>
 
 </div>
 
 </body>
 
-<script type="module" src="js/main.js">
+<script type="module" src="js/test.js">
 
 </script>
 

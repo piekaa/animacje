@@ -3,6 +3,7 @@ import PiekoszekEngine from "./PiekoszekEngine.js";
 import DefinitionStorage from "./definitions/DefinitionStorage.js";
 import StandardRenderable from "./animation/StandardRenderable.js";
 import Animator from "./animation/Animator.js";
+import Square from "./primitives/Square.js";
 
 // todo wykrywanie cyklicznych zależności
 // todo nadpisywanie zmiennych
@@ -11,19 +12,23 @@ class Compiler {
 
     static #primitives = {
         "line": Line,
+        "square": Square,
     };
 
     static #definitions = {};
 
     static #variables = {};
 
-    static compile(code, pivot) {
+    static compile(code, pivot, variables) {
         Compiler.#variables["pivot"] = pivot;
         return new Promise(resolve => {
             PiekoszekEngine.removeAll();
             DefinitionStorage.loadAll().then(definitions => {
                 Compiler.#definitions = definitions;
                 this.#variables["a"] = new Animator();
+                variables.forEach(v => {
+                    this.#variables[v.name] = v.value;
+                });
                 Compiler.#compile(code, PiekoszekEngine.root(), pivot);
                 resolve(this.#variables["a"]);
             });
