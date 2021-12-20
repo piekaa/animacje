@@ -11,22 +11,22 @@ class ClothSimulator {
 
     constructor() {
 
-        const width = 30;
-        const height = 8;
-
-        const space = 30;
-
-        const y = 750;
-        const x = 400;
-
-
-        // const width = 8;
-        // const height = 5;
+        // const width = 30;
+        // const height = 8;
         //
         // const space = 30;
         //
-        // const y = 500;
+        // const y = 750;
         // const x = 400;
+
+
+        const width = 15;
+        const height = 8;
+
+        const space = 50;
+
+        const y = 700;
+        const x = 400;
 
         for (let i = 0; i < height; i++) {
             for (let j = 0; j < width; j++) {
@@ -38,6 +38,7 @@ class ClothSimulator {
             for (let j = 0; j < width; j++) {
                 if (this.points[i * width + j + 1] && j < width - 1) {
                     this.sticks.push(new ClothStick(this.points[i * width + j], this.points[i * width + j + 1]));
+
                 }
                 if (this.points[(i + 1) * width + j]) {
                     this.sticks.push(new ClothStick(this.points[i * width + j], this.points[(i + 1) * width + j]));
@@ -46,6 +47,15 @@ class ClothSimulator {
         }
 
         this.points[0].locked = true;
+        this.points[3].locked = true;
+        this.points[6].locked = true;
+        this.points[9].locked = true;
+        this.points[12].locked = true;
+        this.points[15].locked = true;
+        this.points[18].locked = true;
+        this.points[21].locked = true;
+        this.points[24].locked = true;
+        this.points[27].locked = true;
         this.points[width - 1].locked = true;
 
         this.points.forEach(p => {
@@ -82,6 +92,11 @@ class ClothSimulator {
 
         for (let i = 0; i < 2; i++) {
             this.sticks.forEach(s => {
+
+                if( s.destroyed) {
+                    return;
+                }
+
                 const p1PositionVector = Vector.FromMatrix(s.p1.position);
                 const p2PositionVector = Vector.FromMatrix(s.p2.position);
 
@@ -112,6 +127,21 @@ class ClothSimulator {
         const p = this.points[pointIndex];
         p.anchoredTo = undefined;
         p.locked = true;
+    }
+
+    closestPoint(x, y) {
+        let point;
+        let length = 12193913;
+
+        this.points.forEach(p => {
+            const distance = p.distance(x, y);
+            if (distance < length) {
+                point = p;
+                length = distance
+            }
+        });
+
+        return point;
     }
 
 }

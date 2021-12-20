@@ -11,17 +11,30 @@ class ClothStick {
 
     line
 
+    destroyed = false;
+
     constructor(p1, p2) {
         this.p1 = p1;
         this.p2 = p2;
 
+        p1.sticks.add(this);
+        p2.sticks.add(this);
+
         this.halfLength = Vector.FromMatrix(p1.position).direction(Vector.FromMatrix(p2.position)).length() / 2;
+    }
+
+    destroy() {
+        this.destroyed = true;
     }
 
     drawLine() {
 
         if (this.line) {
             PiekoszekEngine.remove(this.line);
+        }
+
+        if (this.destroyed) {
+            return
         }
 
         this.line = new Line(
