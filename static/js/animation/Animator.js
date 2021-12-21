@@ -3,6 +3,7 @@ import Move from "./Move.js";
 import SmoothInterpolator from "./SmoothInterpolator.js";
 import WiggleInterpolator from "./WiggleInterpolator.js";
 import Call from "./Call.js";
+import LinearInterpolator from "./LinearInterpolator.js";
 
 class Animator {
 
@@ -34,30 +35,22 @@ class Animator {
     }
 
     move(obj, x, y, time) {
-        this.#initObjectIfNew(obj);
-        const framesDuration = this.#timeToFrames(time);
-        this.lastFrame = this.frame + framesDuration;
-        const move = new Move(obj, x, y, framesDuration);
-        this.allActions.add(move);
-        move.start(this.frame);
-        this.#addToDoAtFrame(move);
+        this.#move(obj, x, y, time, new LinearInterpolator());
     }
 
     moveSmooth(obj, x, y, time) {
-        this.#initObjectIfNew(obj);
-        const framesDuration = this.#timeToFrames(time);
-        this.lastFrame = this.frame + framesDuration;
-        const move = new Move(obj, x, y, framesDuration, new SmoothInterpolator());
-        this.allActions.add(move);
-        move.start(this.frame);
-        this.#addToDoAtFrame(move);
+        this.#move(obj, x, y, time, new SmoothInterpolator());
     }
 
     moveWiggle(obj, x, y, time) {
+        this.#move(obj, x, y, time, new WiggleInterpolator());
+    }
+
+    #move(obj, x, y, time, interpolation) {
         this.#initObjectIfNew(obj);
         const framesDuration = this.#timeToFrames(time);
-        this.lastFrame = this.frame + framesDuration;
-        const move = new Move(obj, x, y, framesDuration, new WiggleInterpolator());
+        this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
+        const move = new Move(obj, x, y, framesDuration, interpolation);
         this.allActions.add(move);
         move.start(this.frame);
         this.#addToDoAtFrame(move);

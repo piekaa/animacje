@@ -19,13 +19,14 @@ class Compiler {
 
     static #variables = {};
 
-    static compile(code, pivot, variables) {
+    static compile(code, pivot, variables = []) {
         Compiler.#variables["pivot"] = pivot;
         return new Promise(resolve => {
             PiekoszekEngine.removeAll();
             DefinitionStorage.loadAll().then(definitions => {
                 Compiler.#definitions = definitions;
                 this.#variables["a"] = new Animator();
+                this.#variables["camera"] = PiekoszekEngine.camera;
                 variables.forEach(v => {
                     this.#variables[v.name] = v.value;
                 });

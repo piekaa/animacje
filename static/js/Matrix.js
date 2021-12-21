@@ -86,6 +86,14 @@ class Matrix2D {
         return this.#v[5];
     }
 
+    sx() {
+        return this.#v[0];
+    }
+
+    sy() {
+        return this.#v[4];
+    }
+
     minusXY() {
         return Matrix2D.Translation(-this.x(), -this.y());
     }

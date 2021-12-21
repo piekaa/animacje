@@ -88,6 +88,14 @@ class GL {
             matrix.float32array());
     }
 
+    static applyMatrixArray(matrixArray, variableName) {
+        const gl = GL.#getGl();
+        gl.uniformMatrix3fv(
+            gl.getUniformLocation(this.#currentShader, variableName),
+            false,
+            matrixArray);
+    }
+
     static applyTexture(texture, variableName) {
         const gl = GL.#getGl();
         gl.activeTexture(gl.TEXTURE0);

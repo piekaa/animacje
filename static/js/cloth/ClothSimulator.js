@@ -20,10 +20,10 @@ class ClothSimulator {
         // const x = 400;
 
 
-        const width = 15;
-        const height = 8;
+        const width = 8;
+        const height = 15;
 
-        const space = 50;
+        const space = 20;
 
         const y = 700;
         const x = 400;
@@ -47,15 +47,9 @@ class ClothSimulator {
         }
 
         this.points[0].locked = true;
-        this.points[3].locked = true;
+        this.points[2].locked = true;
+        this.points[4].locked = true;
         this.points[6].locked = true;
-        this.points[9].locked = true;
-        this.points[12].locked = true;
-        this.points[15].locked = true;
-        this.points[18].locked = true;
-        this.points[21].locked = true;
-        this.points[24].locked = true;
-        this.points[27].locked = true;
         this.points[width - 1].locked = true;
 
         this.points.forEach(p => {

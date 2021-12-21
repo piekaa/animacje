@@ -16,7 +16,7 @@ class Renderable {
 
     vertexData;
 
-    visible = false;
+    visible = true;
 
     parent = undefined;
     children = [];
@@ -117,21 +117,19 @@ class Renderable {
 
     }
 
-    render() {
+    render(view) {
 
         if (!this.isReady() || !this.isVisible() || !this.shaderProgram) {
             return;
         }
 
         GL.useShader(this.shaderProgram);
-        const rect = Renderable.canvas.getBoundingClientRect();
         const texture = this.getTexture();
         if (texture) {
             GL.applyTexture(texture, "sprite");
         }
-        const screen = Matrix2D.Scale(2 / rect.width, 2 / rect.height).multiply(Matrix2D.Translation(-rect.width / 2, -rect.height / 2));
         GL.applyMatrix(this.transformation, "transformation");
-        GL.applyMatrix(screen, "screen");
+        GL.applyMatrixArray(view, "view");
         GL.applyColor(this.color);
 
 

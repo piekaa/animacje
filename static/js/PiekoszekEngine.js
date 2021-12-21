@@ -1,5 +1,7 @@
 import GL from "./GL.js";
 import Renderable from "./Renderable.js";
+import Camera from "./Camera.js";
+import Matrix2D from "./Matrix.js";
 
 class PiekoszekEngine {
 
@@ -12,36 +14,55 @@ class PiekoszekEngine {
     static #behavioursAfterTransformation = [];
 
     static #renderablesToRemove = []
-    ''
 
     static #protectedRenderables = [];
+
+    static camera;
+
+    static canvas;
 
     static root() {
         return this.#rootRenderable;
     }
 
     static removeAll() {
-        PiekoszekEngine.#createRootRenderable();
+        PiekoszekEngine.#createRootRenderableAndCamera();
         this.#protectedRenderables.forEach(r => {
             PiekoszekEngine.add(r);
         })
     }
 
     static start() {
-        PiekoszekEngine.#createRootRenderable();
-        // setInterval(this.#update, 33);
-        setInterval(this.#update, 41);
-        // setInterval(this.#update, 233);
-        // setInterval(this.#update, 5033);
-
+        PiekoszekEngine.#createRootRenderableAndCamera();
+        PiekoszekEngine.canvas = document.getElementById("canvas");
+        PiekoszekEngine.#setupMouse();
+        setInterval(this.#update, 1000 / PiekoszekEngine.FPS);
     }
 
-    static #createRootRenderable() {
+    static #setupMouse() {
+        PiekoszekEngine.canvas.addEventListener("mousedown", (event) => {
+            const mx = event.offsetX;
+            const my = event.target.offsetHeight - event.offsetY
+
+            const wmx = (-PiekoszekEngine.camera.worldPositionVector.x + mx) / PiekoszekEngine.camera.scale.sx();
+            const wmy = (-PiekoszekEngine.camera.worldPositionVector.y + my) / PiekoszekEngine.camera.scale.sy();
+
+            const mouseElement = document.getElementById("mouse");
+            mouseElement.value = `${wmx}, ${wmy}`;
+            mouseElement.select();
+            mouseElement.setSelectionRange(0, 20);
+            navigator.clipboard.writeText(mouseElement.value);
+
+        }, false);
+    }
+
+    static #createRootRenderableAndCamera() {
         PiekoszekEngine.#rootRenderable = new Renderable();
         PiekoszekEngine.#rootRenderable.visible = true;
         PiekoszekEngine.#rootRenderable.isReady = () => {
             return false;
         }
+        PiekoszekEngine.camera = new Camera();
     }
 
     static add(renderable, isPotected = false) {
@@ -97,11 +118,12 @@ class PiekoszekEngine {
 
         PiekoszekEngine.#behavioursAfterTransformation.forEach(b => b());
 
-
         GL.clearToColor();
 
-
-        renderables.forEach(r => r.render());
+        const rect = PiekoszekEngine.canvas.getBoundingClientRect();
+        const screen = Matrix2D.Scale(2 / rect.width, 2 / rect.height).multiply(Matrix2D.Translation(-rect.width / 2, -rect.height / 2));
+        const view = screen.multiply(PiekoszekEngine.camera.matrix(rect));
+        renderables.forEach(r => r.render(view.float32array()));
 
         PiekoszekEngine.#renderablesToRemove.forEach(toRemove => {
             toRemove.parent.children = toRemove.parent.children.filter(r => r.getId() !== toRemove.getId());
