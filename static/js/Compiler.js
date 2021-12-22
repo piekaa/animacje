@@ -4,6 +4,7 @@ import DefinitionStorage from "./definitions/DefinitionStorage.js";
 import StandardRenderable from "./animation/StandardRenderable.js";
 import Animator from "./animation/Animator.js";
 import Square from "./primitives/Square.js";
+import Camera from "./Camera.js";
 
 // todo wykrywanie cyklicznych zależności
 // todo nadpisywanie zmiennych
@@ -26,7 +27,7 @@ class Compiler {
             DefinitionStorage.loadAll().then(definitions => {
                 Compiler.#definitions = definitions;
                 this.#variables["a"] = new Animator();
-                this.#variables["camera"] = PiekoszekEngine.camera;
+                this.#variables["camera"] = Camera.current;
                 variables.forEach(v => {
                     this.#variables[v.name] = v.value;
                 });

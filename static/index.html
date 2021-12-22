@@ -7,9 +7,17 @@
     <link rel="icon" href="data:,">
 
     <style>
-        canvas {
+
+        .hd {
+            margin-top: 16px;
             width: 95%;
             height: 50vh;
+            resize: horizontal;
+        }
+
+        canvas {
+            width: 100%;
+            padding-bottom: 56.25%;
         }
 
         textarea {
@@ -52,6 +60,12 @@
             width: 100px;
         }
 
+        .player {
+            width: 95%;
+            display: flex;
+            justify-content: space-around;
+        }
+
     </style>
 
 </head>
@@ -66,10 +80,15 @@
             <button id="compiler">Compile</button>
         </div>
     </div>
-    <canvas id="canvas" width="1920" height="1080"></canvas>
 
-    <input id="progress" class="progress" type="range">
-    <button id="play">Play</button>
+    <div class="player">
+        <button id="play">Play</button>
+        <input id="progress" class="progress" type="range">
+    </div>
+
+    <div class="hd">
+        <canvas id="canvas" width="1920" height="1080" oncontextmenu="return false;"></canvas>
+    </div>
 
 </div>
 

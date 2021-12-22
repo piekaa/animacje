@@ -2,10 +2,13 @@ import GL from "./GL.js";
 import Renderable from "./Renderable.js";
 import Camera from "./Camera.js";
 import Matrix2D from "./Matrix.js";
+import Mouse from "./Mouse.js";
 
 class PiekoszekEngine {
 
     static FPS = 30;
+    static width = 1920;
+    static height = 1080;
 
     static #rootRenderable;
 
@@ -16,8 +19,6 @@ class PiekoszekEngine {
     static #renderablesToRemove = []
 
     static #protectedRenderables = [];
-
-    static camera;
 
     static canvas;
 
@@ -35,25 +36,10 @@ class PiekoszekEngine {
     static start() {
         PiekoszekEngine.#createRootRenderableAndCamera();
         PiekoszekEngine.canvas = document.getElementById("canvas");
-        PiekoszekEngine.#setupMouse();
-        setInterval(this.#update, 1000 / PiekoszekEngine.FPS);
-    }
-
-    static #setupMouse() {
-        PiekoszekEngine.canvas.addEventListener("mousedown", (event) => {
-            const mx = event.offsetX;
-            const my = event.target.offsetHeight - event.offsetY
-
-            const wmx = (-PiekoszekEngine.camera.worldPositionVector.x + mx) / PiekoszekEngine.camera.scale.sx();
-            const wmy = (-PiekoszekEngine.camera.worldPositionVector.y + my) / PiekoszekEngine.camera.scale.sy();
-
-            const mouseElement = document.getElementById("mouse");
-            mouseElement.value = `${wmx}, ${wmy}`;
-            mouseElement.select();
-            mouseElement.setSelectionRange(0, 20);
-            navigator.clipboard.writeText(mouseElement.value);
-
-        }, false);
+        this.canvas.width = PiekoszekEngine.width;
+        this.canvas.height = PiekoszekEngine.height;
+        Mouse.setup();
+        setInterval(PiekoszekEngine.#update, 1000 / PiekoszekEngine.FPS);
     }
 
     static #createRootRenderableAndCamera() {
@@ -62,7 +48,7 @@ class PiekoszekEngine {
         PiekoszekEngine.#rootRenderable.isReady = () => {
             return false;
         }
-        PiekoszekEngine.camera = new Camera();
+        new Camera();
     }
 
     static add(renderable, isPotected = false) {
@@ -120,9 +106,12 @@ class PiekoszekEngine {
 
         GL.clearToColor();
 
-        const rect = PiekoszekEngine.canvas.getBoundingClientRect();
+        const rect = {
+            width: PiekoszekEngine.width,
+            height: PiekoszekEngine.height
+        }
         const screen = Matrix2D.Scale(2 / rect.width, 2 / rect.height).multiply(Matrix2D.Translation(-rect.width / 2, -rect.height / 2));
-        const view = screen.multiply(PiekoszekEngine.camera.matrix(rect));
+        const view = screen.multiply(Camera.current.matrix(rect));
         renderables.forEach(r => r.render(view.float32array()));
 
         PiekoszekEngine.#renderablesToRemove.forEach(toRemove => {

@@ -4,6 +4,13 @@ import Vector from "./Vector.js";
 
 class Camera extends AnimatedRenderable {
 
+    static current;
+
+    constructor() {
+        super();
+        Camera.current = this;
+    }
+
     worldPositionVector = new Vector(0, 0);
 
     matrix(rect) {
