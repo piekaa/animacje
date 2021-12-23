@@ -38,7 +38,7 @@ class PiekoszekEngine {
         PiekoszekEngine.canvas = document.getElementById("canvas");
         this.canvas.width = PiekoszekEngine.width;
         this.canvas.height = PiekoszekEngine.height;
-        Mouse.setup();
+        Mouse.setup(PiekoszekEngine.width);
         setInterval(PiekoszekEngine.#update, 1000 / PiekoszekEngine.FPS);
     }
 
