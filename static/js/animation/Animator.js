@@ -34,12 +34,27 @@ class Animator {
         this.allObjects.add(new Call(obj, fun, this.frame, params));
     }
 
+    moveWait(obj, x, y, time) {
+        this.move(obj, x, y, time);
+        this.wait(time);
+    }
+
     move(obj, x, y, time) {
         this.#move(obj, x, y, time, new LinearInterpolator());
     }
 
+    moveSmoothWait(obj, x, y, time) {
+        this.moveSmooth(obj, x, y, time);
+        this.wait(time);
+    }
+
     moveSmooth(obj, x, y, time) {
         this.#move(obj, x, y, time, new SmoothInterpolator());
+    }
+
+    moveWiggleWait(obj, x, y, time) {
+        this.moveWiggle(obj, x, y, time);
+        this.wait(time);
     }
 
     moveWiggle(obj, x, y, time) {

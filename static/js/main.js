@@ -1,6 +1,10 @@
 import PiekoszekEngine from "./PiekoszekEngine.js";
-import Compiler from "./Compiler.js";
 import Square from "./primitives/Square.js";
+import Files from "./files/Files.js";
+import AnimationCompiler from "./compiler/AnimationCompiler.js";
+import InitCompiler from "./compiler/InitCompiler.js";
+
+Files.start();
 
 PiekoszekEngine.start();
 
@@ -14,14 +18,16 @@ let animator;
 let progress = document.getElementById("progress");
 
 document.getElementById("compiler").onclick = () => {
-    Compiler.compile(document.getElementById("code").value, pivot)
+
+    InitCompiler.compile(Files.getInitCode(), pivot)
+        .then(variables => AnimationCompiler.compile(Files.getAnimationCode(), variables))
         .then(a => {
             a.completeRemainingFrames();
             progress.min = 0;
             progress.max = a.frame - 1;
             progress.value = 0;
             animator = a;
-        })
+        });
 }
 
 progress.oninput = (event) => {

@@ -1,15 +1,14 @@
-import Line from "./primitives/Line.js";
-import PiekoszekEngine from "./PiekoszekEngine.js";
-import DefinitionStorage from "./definitions/DefinitionStorage.js";
-import StandardRenderable from "./animation/StandardRenderable.js";
-import Animator from "./animation/Animator.js";
-import Square from "./primitives/Square.js";
-import Camera from "./Camera.js";
+import Line from "../primitives/Line.js";
+import PiekoszekEngine from "../PiekoszekEngine.js";
+import DefinitionStorage from "../definitions/DefinitionStorage.js";
+import StandardRenderable from "../animation/StandardRenderable.js";
+import Square from "../primitives/Square.js";
+import Camera from "../Camera.js";
 
 // todo wykrywanie cyklicznych zależności
 // todo nadpisywanie zmiennych
 
-class Compiler {
+class InitCompiler {
 
     static #primitives = {
         "line": Line,
@@ -21,18 +20,17 @@ class Compiler {
     static #variables = {};
 
     static compile(code, pivot, variables = []) {
-        Compiler.#variables["pivot"] = pivot;
+        InitCompiler.#variables["pivot"] = pivot;
         return new Promise(resolve => {
             PiekoszekEngine.removeAll();
             DefinitionStorage.loadAll().then(definitions => {
-                Compiler.#definitions = definitions;
-                this.#variables["a"] = new Animator();
-                this.#variables["camera"] = Camera.current;
+                InitCompiler.#definitions = definitions;
+                InitCompiler.#variables["camera"] = Camera.current;
                 variables.forEach(v => {
-                    this.#variables[v.name] = v.value;
+                    InitCompiler.#variables[v.name] = v.value;
                 });
-                Compiler.#compile(code, PiekoszekEngine.root(), pivot);
-                resolve(this.#variables["a"]);
+                InitCompiler.#compile(code, PiekoszekEngine.root(), pivot);
+                resolve(InitCompiler.#variables);
             });
         });
 
@@ -45,7 +43,7 @@ class Compiler {
             if (l.length === 0) {
                 return;
             }
-            const created = Compiler.#parseLine(l, parent, pivot)
+            const created = InitCompiler.#parseLine(l, parent, pivot)
             if (created) {
                 objects.push(created);
             }
@@ -69,9 +67,9 @@ class Compiler {
             const varName = sp.shift();
             const type = sp.shift();
 
-            const args = Compiler.#parseArgs(sp);
-            const obj = Compiler.#createObject(type, args, parent, pivot);
-            Compiler.#variables[varName] = obj;
+            const args = InitCompiler.#parseArgs(sp);
+            const obj = InitCompiler.#createObject(type, args, parent, pivot);
+            InitCompiler.#variables[varName] = obj;
             return obj;
         } else {
             const firstDotIndex = l.indexOf(".");
@@ -83,25 +81,25 @@ class Compiler {
                 sp.pop();
             }
             const functionName = sp.shift();
-            const args = Compiler.#parseArgs(sp);
-            const obj = Compiler.#variables[variableName];
+            const args = InitCompiler.#parseArgs(sp);
+            const obj = InitCompiler.#variables[variableName];
             obj[functionName](...args);
         }
     }
 
     static #createObject(type, args, parent, pivot) {
 
-        const primitiveType = Compiler.#primitives[type];
+        const primitiveType = InitCompiler.#primitives[type];
         if (primitiveType) {
             let obj = new primitiveType(...args);
             PiekoszekEngine.addAsChild(parent, obj);
             return obj;
         }
 
-        const definition = Compiler.#definitions[type];
+        const definition = InitCompiler.#definitions[type];
         if (definition) {
             const complexObject = new StandardRenderable(...args);
-            Compiler.#compile(definition, complexObject);
+            InitCompiler.#compile(definition, complexObject);
             complexObject.setPivot(pivot.position.x() / 2, pivot.position.y() / 2);
             PiekoszekEngine.addAsChild(parent, complexObject);
             return complexObject;
@@ -113,8 +111,8 @@ class Compiler {
     static #parseArgs(args) {
         return args.map(arg => {
 
-            if (this.#variables[arg]) {
-                return this.#variables[arg];
+            if (InitCompiler.#variables[arg]) {
+                return InitCompiler.#variables[arg];
             }
 
             if (arg.startsWith(`"`)) {
@@ -126,4 +124,4 @@ class Compiler {
 
 }
 
-export default Compiler
+export default InitCompiler

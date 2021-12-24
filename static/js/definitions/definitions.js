@@ -1,5 +1,5 @@
 import PiekoszekEngine from "../PiekoszekEngine.js";
-import Compiler from "../Compiler.js";
+import InitCompiler from "../compiler/InitCompiler.js";
 import DefinitionPostCompiler from "./DefinitionPostCompiler.js";
 import DefinitionStorage from "./DefinitionStorage.js";
 import Square from "../primitives/Square.js";
@@ -16,7 +16,7 @@ document.getElementById("compileButton").onclick = compile;
 function compile() {
     const name = document.getElementById("definitionName").value;
     const code = document.getElementById("code").value;
-    Compiler.compile(code, pivot)
+    InitCompiler.compile(code, pivot)
         .then(() => DefinitionPostCompiler.postCompileSteps(name, code, pivot))
         .then(() => loadDefinitions());
 }
