@@ -4,6 +4,7 @@ import SmoothInterpolator from "./SmoothInterpolator.js";
 import WiggleInterpolator from "./WiggleInterpolator.js";
 import Call from "./Call.js";
 import LinearInterpolator from "./LinearInterpolator.js";
+import Show from "./Show.js";
 
 class Animator {
 
@@ -61,14 +62,32 @@ class Animator {
         this.#move(obj, x, y, time, new WiggleInterpolator());
     }
 
-    #move(obj, x, y, time, interpolation) {
+    #move(obj, x, y, time, interpolator) {
         this.#initObjectIfNew(obj);
         const framesDuration = this.#timeToFrames(time);
         this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
-        const move = new Move(obj, x, y, framesDuration, interpolation);
+        const move = new Move(obj, x, y, framesDuration, interpolator);
         this.allActions.add(move);
         move.start(this.frame);
         this.#addToDoAtFrame(move);
+    }
+
+    popupWait(obj, time = "0.5s") {
+        this.popup(obj, time);
+        this.wait(time);
+    }
+
+    popup(obj, time = "0.5s") {
+        this.#show(obj, time, new WiggleInterpolator(2.3));
+    }
+
+    #show(obj, time, interpolator) {
+        this.#initObjectIfNew(obj);
+        const framesDuration = this.#timeToFrames(time);
+        this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
+        const show = new Show(obj, framesDuration, interpolator);
+        this.allActions.add(show);
+        this.#addToDoAtFrame(show);
     }
 
     #initObjectIfNew(obj) {
