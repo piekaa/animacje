@@ -11,21 +11,29 @@ class Files {
     #intervalId;
 
     #onFileSelect;
+    #onLoad;
 
-    constructor(withInitFile = true, storage = new FileStorage(), onFileSelect = () => {
-    }) {
+    constructor(withInitFile = true, storage = new FileStorage(), callbacks = {}) {
         this.#storage = storage;
         this.#withInitFile = withInitFile;
-        this.#onFileSelect = onFileSelect;
+        this.#onFileSelect = callbacks.onFileSelect || (() => {
+        });
+        this.#onLoad = callbacks.onLoad || (() => {
+        });
     }
 
-    start() {
+    start(onlyLoad = false) {
         this.#storage.load()
             .then(files => {
                 if (files.length === 0) {
                     files = [{name: "init", content: ""}]
                 }
                 this.#filesElement = document.getElementById("files");
+
+                if (onlyLoad) {
+                    this.#filesElement = document.createElement("div");
+                }
+
                 this.#filesElement.innerHTML = "";
                 for (let i = 0; i < files.length; i++) {
                     const f = files[i];
@@ -43,6 +51,7 @@ class Files {
                 };
 
                 this.#intervalId = setInterval(this.#save.bind(this), 1000);
+                this.#onLoad();
             });
     }
 

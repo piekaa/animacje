@@ -6,10 +6,13 @@ import InitCompiler from "./compiler/InitCompiler.js";
 import FileStorage from "./files/FileStorage.js";
 import DefinitionPostCompiler from "./definitions/DefinitionPostCompiler.js";
 
-let animationFiles = new Files();
-let definitionFiles = new Files(false, new FileStorage("__definitions"));
-
-animationFiles.start();
+let animationFiles = new Files(true, new FileStorage(), {onLoad: compileAnimation});
+let definitionFiles = new Files(false, new FileStorage("__definitions"), {
+    onLoad: () => {
+        animationFiles.start();
+    }
+});
+definitionFiles.start(true);
 
 let tab = "animation";
 
@@ -82,7 +85,7 @@ document.getElementById("animationTab").onclick = (event) => {
     document.getElementById("definitionsTab").classList.remove("selectedTab");
     definitionFiles.stop();
     animationFiles.stop();
-    animationFiles = new Files();
+    animationFiles = new Files(true, new FileStorage(), {onLoad: compileAnimation});
     animationFiles.start();
     tab = "animation";
     pivot.visible = false;
@@ -94,7 +97,7 @@ document.getElementById("definitionsTab").onclick = (event) => {
     tab = "definitions";
     definitionFiles.stop();
     animationFiles.stop();
-    definitionFiles = new Files(false, new FileStorage("__definitions"), compileDefinition);
+    definitionFiles = new Files(false, new FileStorage("__definitions"), {onFileSelect: compileDefinition});
     definitionFiles.start();
     pivot.visible = true;
 };
