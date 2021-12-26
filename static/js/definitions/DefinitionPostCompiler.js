@@ -1,13 +1,11 @@
 import PiekoszekEngine from "../PiekoszekEngine.js";
-import DefinitionStorage from "./DefinitionStorage.js";
 
 class DefinitionPostCompiler {
 
-    static postCompileSteps(name, code,pivot) {
+    static postCompileSteps(pivot) {
         const root = PiekoszekEngine.root();
         this.#showAllChildren(root);
         PiekoszekEngine.add(pivot)
-        return DefinitionStorage.save(name, code);
     }
 
     static #showAllChildren(renderable) {

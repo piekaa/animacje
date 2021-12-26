@@ -1,13 +1,19 @@
 class FileStorage {
 
-    static load(project = "main") {
+    #project
+
+    constructor(project = "main") {
+        this.#project = project;
+    }
+
+    load() {
         return new Promise(resolve => {
-            resolve(JSON.parse(localStorage.getItem(project)) || []);
+            resolve(JSON.parse(localStorage.getItem(this.#project)) || []);
         });
     }
 
-    static save(files, project = "main") {
-        localStorage.setItem(project, JSON.stringify(files));
+    save(files) {
+        localStorage.setItem(this.#project, JSON.stringify(files));
     }
 }
 

@@ -3,14 +3,22 @@ import Square from "./primitives/Square.js";
 import Files from "./files/Files.js";
 import AnimationCompiler from "./compiler/AnimationCompiler.js";
 import InitCompiler from "./compiler/InitCompiler.js";
+import FileStorage from "./files/FileStorage.js";
+import DefinitionPostCompiler from "./definitions/DefinitionPostCompiler.js";
 
-Files.start();
+let animationFiles = new Files();
+let definitionFiles = new Files(false, new FileStorage("__definitions"));
+
+animationFiles.start();
+
+let tab = "animation";
 
 PiekoszekEngine.start();
 
-const pivot = new Square(100, 100, 10);
+const pivot = new Square(100, 100, 50);
 pivot.visible = false;
 pivot.zIndex = 10000;
+pivot.setColor(0, 1, 0, 1);
 PiekoszekEngine.add(pivot);
 
 let animator;
@@ -18,15 +26,31 @@ let animator;
 let progress = document.getElementById("progress");
 
 document.getElementById("compiler").onclick = () => {
+    if (tab === "animation") {
+        compileAnimation();
+    }
+    if (tab === "definitions") {
+        compileDefinition();
+    }
+}
 
-    InitCompiler.compile(Files.getInitCode(), pivot)
-        .then(variables => AnimationCompiler.compile(Files.getAnimationCode(), variables))
+function compileAnimation() {
+    InitCompiler.compile(animationFiles.getInitCode(), pivot, definitionFiles.getRawData())
+        .then(variables => AnimationCompiler.compile(animationFiles.getAnimationCode(), variables))
         .then(a => {
             a.completeRemainingFrames();
             progress.min = 0;
             progress.max = a.frame - 1;
             progress.value = 0;
             animator = a;
+        });
+}
+
+
+function compileDefinition() {
+    InitCompiler.compile(definitionFiles.selectedFileCode(), pivot, definitionFiles.getRawData())
+        .then(() => {
+            DefinitionPostCompiler.postCompileSteps(pivot);
         });
 }
 
@@ -51,4 +75,26 @@ document.getElementById("play").onclick = () => {
         }
         frame++;
     });
+};
+
+document.getElementById("animationTab").onclick = (event) => {
+    event.target.classList.add("selectedTab");
+    document.getElementById("definitionsTab").classList.remove("selectedTab");
+    definitionFiles.stop();
+    animationFiles.stop();
+    animationFiles = new Files();
+    animationFiles.start();
+    tab = "animation";
+    pivot.visible = false;
+};
+
+document.getElementById("definitionsTab").onclick = (event) => {
+    event.target.classList.add("selectedTab");
+    document.getElementById("animationTab").classList.remove("selectedTab");
+    tab = "definitions";
+    definitionFiles.stop();
+    animationFiles.stop();
+    definitionFiles = new Files(false, new FileStorage("__definitions"), compileDefinition);
+    definitionFiles.start();
+    pivot.visible = true;
 };

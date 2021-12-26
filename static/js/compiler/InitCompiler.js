@@ -1,6 +1,5 @@
 import Line from "../primitives/Line.js";
 import PiekoszekEngine from "../PiekoszekEngine.js";
-import DefinitionStorage from "../definitions/DefinitionStorage.js";
 import StandardRenderable from "../animation/StandardRenderable.js";
 import Square from "../primitives/Square.js";
 import Camera from "../Camera.js";
@@ -19,21 +18,20 @@ class InitCompiler {
 
     static #variables = {};
 
-    static compile(code, pivot, variables = []) {
+    static compile(code, pivot, definitions, variables = []) {
         InitCompiler.#variables["pivot"] = pivot;
         return new Promise(resolve => {
             PiekoszekEngine.removeAll();
-            DefinitionStorage.loadAll().then(definitions => {
-                InitCompiler.#definitions = definitions;
-                InitCompiler.#variables["camera"] = Camera.current;
-                variables.forEach(v => {
-                    InitCompiler.#variables[v.name] = v.value;
-                });
-                InitCompiler.#compile(code, PiekoszekEngine.root(), pivot);
-                resolve(InitCompiler.#variables);
+            definitions.forEach(definition => {
+                InitCompiler.#definitions[definition.name] = definition.content;
+            })
+            InitCompiler.#variables["camera"] = Camera.current;
+            variables.forEach(v => {
+                InitCompiler.#variables[v.name] = v.value;
             });
+            InitCompiler.#compile(code, PiekoszekEngine.root(), pivot);
+            resolve(InitCompiler.#variables);
         });
-
     }
 
     static #compile(code, parent, pivot) {
@@ -51,7 +49,8 @@ class InitCompiler {
         return objects;
     }
 
-    static #parseLine(line, parent, pivot) {
+    static
+    #parseLine(line, parent, pivot) {
 
         if (line.startsWith("//")) {
             return;
@@ -99,7 +98,7 @@ class InitCompiler {
         const definition = InitCompiler.#definitions[type];
         if (definition) {
             const complexObject = new StandardRenderable(...args);
-            InitCompiler.#compile(definition, complexObject);
+            InitCompiler.#compile(definition, complexObject, pivot);
             complexObject.setPivot(pivot.position.x() / 2, pivot.position.y() / 2);
             PiekoszekEngine.addAsChild(parent, complexObject);
             return complexObject;
@@ -108,7 +107,8 @@ class InitCompiler {
         throw new Error(`${type} is not defined`);
     }
 
-    static #parseArgs(args) {
+    static
+    #parseArgs(args) {
         return args.map(arg => {
 
             if (InitCompiler.#variables[arg]) {

@@ -2,103 +2,138 @@ import FileStorage from "./FileStorage.js";
 
 class Files {
 
-    static #allFiles = [];
-    static #selected = 0;
-    static #filesElement;
+    #allFiles = [];
+    #selected = 0;
+    #filesElement;
+    #storage;
+    #withInitFile;
 
-    static start() {
-        FileStorage.load()
+    #intervalId;
+
+    #onFileSelect;
+
+    constructor(withInitFile = true, storage = new FileStorage(), onFileSelect = () => {
+    }) {
+        this.#storage = storage;
+        this.#withInitFile = withInitFile;
+        this.#onFileSelect = onFileSelect;
+    }
+
+    start() {
+        this.#storage.load()
             .then(files => {
                 if (files.length === 0) {
-                    files = [{name: "init", content: "// Create and set initial positions of objectes here\n"}]
+                    files = [{name: "init", content: ""}]
                 }
-                Files.#filesElement = document.getElementById("files");
+                this.#filesElement = document.getElementById("files");
+                this.#filesElement.innerHTML = "";
                 for (let i = 0; i < files.length; i++) {
                     const f = files[i];
-                    this.#createAndAppendFileElement(f.name, f.content, i !== 0);
+                    this.#createAndAppendFileElement(f.name, f.content, i !== 0 || !this.#withInitFile);
                 }
 
                 document.getElementById("newFile").onclick = () => {
-                    Files.#newFile();
+                    this.#newFile();
                 }
 
-                Files.#select(0);
+                this.#select(0);
 
                 document.getElementById("code").oninput = (event) => {
-                    Files.#allFiles[Files.#selected].content = event.target.value;
+                    this.#allFiles[this.#selected].content = event.target.value;
                 };
 
-                setInterval(Files.#save, 1000);
+                this.#intervalId = setInterval(this.#save.bind(this), 1000);
             });
     }
 
-    static #newFile() {
-        Files.#createAndAppendFileElement("new file")
+    stop() {
+        clearInterval(this.#intervalId);
     }
 
-    static #createAndAppendFileElement(name, content = "", editable = true) {
+    #newFile() {
+        this.#createAndAppendFileElement("new file")
+    }
+
+    #createAndAppendFileElement(name, content = "", editable = true) {
         const fileElement = document.createElement("div");
         fileElement.classList.add("file");
         if (editable) {
             fileElement.contentEditable = "true";
         }
         fileElement.innerHTML = name;
-        const id = Files.#allFiles.length;
+        const id = this.#allFiles.length;
         fileElement.id = `${id}`;
+
+        if (!editable) {
+            fileElement.classList.add("protected");
+        }
+
         fileElement.onclick = () => {
-            Files.#select(id);
+            this.#select(id);
         }
 
         fileElement.addEventListener("focusout", (event) => {
             const name = event.target.innerText;
-            Files.#allFiles[id].name = name;
+            this.#allFiles[id].name = name;
             if (name === "") {
-                Files.#remove(id);
+                this.#remove(id);
             }
         });
 
-        Files.#allFiles.push(new File(name, content, fileElement));
-        Files.#filesElement.appendChild(fileElement);
+        this.#allFiles.push(new File(name, content, fileElement));
+        this.#filesElement.appendChild(fileElement);
     }
 
-    static #remove(id) {
+    #remove(id) {
         document.getElementById(`${id}`).style.display = "none";
-        Files.#selected = 0;
-        Files.#select(0);
+        this.#selected = 0;
+        this.#select(0);
     }
 
-    static #select(id) {
+    #select(id) {
         const stringId = `${id}`;
         const intId = parseInt(stringId);
 
-        Files.#allFiles[Files.#selected].element.classList.remove("selected");
-        Files.#allFiles[intId].element.classList.add("selected");
+        this.#allFiles[this.#selected].element.classList.remove("selected");
+        this.#allFiles[intId].element.classList.add("selected");
 
-        document.getElementById("code").value = Files.#allFiles[intId].content;
+        const code = this.#allFiles[intId].content;
 
-        Files.#selected = intId;
+        document.getElementById("code").value = code;
+
+        this.#selected = intId;
+
+        this.#onFileSelect(code);
     }
 
-    static #save() {
-        let serializedFiles = [];
-        Files.#allFiles.forEach(f => {
-            if (f.name !== "") {
-                serializedFiles.push(f.serialize())
-            }
-        })
-        FileStorage.save(serializedFiles);
+    getRawData() {
+        return this.#serializeAll();
     }
 
-    static getInitCode() {
-        return Files.#allFiles[0].content;
+    #save() {
+        this.#storage.save(this.#serializeAll());
     }
 
-    static getAnimationCode() {
+    #serializeAll() {
+        return this.#allFiles
+            .filter(f => f.name !== "")
+            .map(f => f.serialize());
+    }
+
+    getInitCode() {
+        return this.#allFiles[0].content;
+    }
+
+    getAnimationCode() {
         let code = "";
-        for (let i = 1; i < Files.#allFiles.length; i++) {
-            code += Files.#allFiles[i].content + "\n";
+        for (let i = 1; i < this.#allFiles.length; i++) {
+            code += this.#allFiles[i].content + "\n";
         }
         return code;
+    }
+
+    selectedFileCode() {
+        return this.#allFiles[this.#selected].content;
     }
 
 }

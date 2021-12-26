@@ -22,7 +22,6 @@
 
         textarea {
             width: 80%;
-            height: 30vh;
             font-size: 1em;
         }
 
@@ -81,7 +80,7 @@
             color: #78777a;
         }
 
-        .file:first-child {
+        .protected {
             background: #c1ffc6;
         }
 
@@ -94,11 +93,27 @@
         }
 
         #code {
-            height: 400px;
+            height: 300px;
         }
 
         .new-file {
             margin: 8px;
+        }
+
+        .tabs {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+
+        .tab {
+            background: #aaa9ac;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .selectedTab {
+            background: #7bab7a;
         }
 
     </style>
@@ -108,7 +123,13 @@
 
 <div class="main">
 
-    <div>
+    <div class="left">
+
+        <div class="tabs">
+            <div id="animationTab" class="tab selectedTab">Animation</div>
+            <div id="definitionsTab" class="tab">Definitions</div>
+        </div>
+
         <button id="newFile" class="new-file">New File</button>
         <div id="files" class="files">
         </div>
