@@ -3,6 +3,7 @@ import PiekoszekEngine from "../PiekoszekEngine.js";
 import StandardRenderable from "../animation/StandardRenderable.js";
 import Square from "../primitives/Square.js";
 import Camera from "../Camera.js";
+import Curve from "../primitives/Curve.js";
 
 // todo wykrywanie cyklicznych zależności
 // todo nadpisywanie zmiennych
@@ -12,6 +13,7 @@ class InitCompiler {
     static #primitives = {
         "line": Line,
         "square": Square,
+        "curve": Curve,
     };
 
     static #definitions = {};

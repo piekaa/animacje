@@ -23,7 +23,7 @@ class Mouse {
 
         canvas.addEventListener("mousedown", (event) => {
             const mx = event.offsetX * canvasScale;
-            const my = (event.target.offsetHeight - event.offsetY) * canvasScale;
+            const my = (event.target.clientHeight - parseFloat(getComputedStyle(event.target).paddingBottom) - event.offsetY) * canvasScale;
 
             const wmx = ((-Camera.current.worldPositionVector.x + mx) / Camera.current.scale.sx()).toFixed(2);
             const wmy = ((-Camera.current.worldPositionVector.y + my) / Camera.current.scale.sy()).toFixed(2);
