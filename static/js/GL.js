@@ -172,6 +172,10 @@ class GL {
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertexData.getLength() / 4);
     }
 
+    static cloneVertexData(vertexData) {
+        return this.createVertexData(vertexData.getData());
+    }
+
     static createVertexData(data) {
         const gl = GL.#getGl();
 

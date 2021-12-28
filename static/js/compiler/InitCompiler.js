@@ -4,6 +4,8 @@ import StandardRenderable from "../animation/StandardRenderable.js";
 import Square from "../primitives/Square.js";
 import Camera from "../Camera.js";
 import Curve from "../primitives/Curve.js";
+import Text from "../primitives/Text.js";
+import Dialog from "../primitives/Dialog.js";
 
 // todo wykrywanie cyklicznych zależności
 // todo nadpisywanie zmiennych
@@ -14,6 +16,8 @@ class InitCompiler {
         "line": Line,
         "square": Square,
         "curve": Curve,
+        "text": Text,
+        "dialog": Dialog
     };
 
     static #definitions = {};
@@ -58,15 +62,16 @@ class InitCompiler {
             return;
         }
 
-        const l = line.replace(/\s/g, '');
+        // const l = line.replace(/\s/g, '');
+        const l = line;
         if (l.includes("=")) {
             const sp = l.split(/[=(,)]/);
             sp.pop();
             if (l.includes("()")) {
                 sp.pop();
             }
-            const varName = sp.shift();
-            const type = sp.shift();
+            const varName = sp.shift().replace(/\s/g, '');
+            const type = sp.shift().replace(/\s/g, '');
 
             const args = InitCompiler.#parseArgs(sp);
             const obj = InitCompiler.#createObject(type, args, parent, pivot);
@@ -74,14 +79,14 @@ class InitCompiler {
             return obj;
         } else {
             const firstDotIndex = l.indexOf(".");
-            const variableName = l.substring(0, firstDotIndex)
+            const variableName = l.substring(0, firstDotIndex).replace(/\s/g, '');
             const sp = l.substring(firstDotIndex + 1, l.length).split(/[(,)]/);
 
             sp.pop();
             if (l.includes("()")) {
                 sp.pop();
             }
-            const functionName = sp.shift();
+            const functionName = sp.shift().replace(/\s/g, '');
             const args = InitCompiler.#parseArgs(sp);
             const obj = InitCompiler.#variables[variableName];
             obj[functionName](...args);
@@ -109,17 +114,21 @@ class InitCompiler {
         throw new Error(`${type} is not defined`);
     }
 
-    static
-    #parseArgs(args) {
+    static #parseArgs(args) {
         return args.map(arg => {
+
+            arg = arg.trim();
+
+            if (arg.startsWith(`"`)) {
+                return arg.substring(1, arg.length - 1);
+            }
+
+            arg = arg.replace(/\s/g, '');
 
             if (InitCompiler.#variables[arg]) {
                 return InitCompiler.#variables[arg];
             }
 
-            if (arg.startsWith(`"`)) {
-                return arg.substring(1, arg.length - 1);
-            }
             return parseFloat(arg);
         });
     }

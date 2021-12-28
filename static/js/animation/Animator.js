@@ -5,6 +5,7 @@ import WiggleInterpolator from "./WiggleInterpolator.js";
 import Call from "./Call.js";
 import LinearInterpolator from "./LinearInterpolator.js";
 import Show from "./Show.js";
+import Hide from "./Hide.js";
 
 class Animator {
 
@@ -81,6 +82,15 @@ class Animator {
         this.#show(obj, time, new WiggleInterpolator(2.3));
     }
 
+    popDownWait(obj, time = "0.5s") {
+        this.popDown(obj, time);
+        this.wait(time);
+    }
+
+    popDown(obj, time = "0.5s") {
+        this.#hide(obj, time, new SmoothInterpolator());
+    }
+
     #show(obj, time, interpolator) {
         this.#initObjectIfNew(obj);
         const framesDuration = this.#timeToFrames(time);
@@ -88,6 +98,15 @@ class Animator {
         const show = new Show(obj, framesDuration, interpolator);
         this.allActions.add(show);
         this.#addToDoAtFrame(show);
+    }
+
+    #hide(obj, time, interpolator) {
+        this.#initObjectIfNew(obj);
+        const framesDuration = this.#timeToFrames(time);
+        this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
+        const hide = new Hide(obj, framesDuration, interpolator);
+        this.allActions.add(hide);
+        this.#addToDoAtFrame(hide);
     }
 
     #initObjectIfNew(obj) {

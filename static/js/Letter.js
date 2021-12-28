@@ -1,4 +1,5 @@
 import TexturedRenderable from "./TexturedRenderable.js";
+import Gl from "./GL.js";
 
 class Letter extends TexturedRenderable {
 
@@ -26,9 +27,14 @@ class Letter extends TexturedRenderable {
     }
 
     #loadTexture(char) {
+        let fontSize = 500;
 
-        if(Letter.loadedChars[char]) {
-            this.texture = Letter.loadedChars[char];
+        if (Letter.loadedChars[char]) {
+            this.texture = Letter.loadedChars[char].texture;
+            this.vertexData = Gl.cloneVertexData(Letter.loadedChars[char].vertexData);
+            this.width = Letter.loadedChars[char].width;
+            this.setPivot(this.width / 2, fontSize / 2);
+            this.visible = true;
             return;
         }
         const context = Letter.#fontCanvas.getContext("2d");
@@ -38,8 +44,6 @@ class Letter extends TexturedRenderable {
         context.fillStyle = "#F00";
         context.fill();
 
-        let fontSize = 500;
-
         context.font = `${fontSize}px serif`;
         context.textBaseline = "middle";
         context.fillStyle = "#0F0";
@@ -48,8 +52,13 @@ class Letter extends TexturedRenderable {
 
         this.loadImage(Letter.#fontCanvas.toDataURL("image/png"),
             () => {
-                Letter.loadedChars[char] = this.texture;
-                this.setPivot(this.width/2, fontSize/2);
+                Letter.loadedChars[char] = {
+                    texture: this.texture,
+                    vertexData: this.vertexData,
+                    width: this.width
+                };
+                this.setPivot(this.width / 2, fontSize / 2);
+                this.visible = true;
             });
     }
 

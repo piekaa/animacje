@@ -41,7 +41,7 @@ class Renderable {
     useTexcoord = false;
     triangleStrip = true;
 
-    constructor(fragmentShaderPath = "/js/shader/untexturedFragment.shader", vertexShaderPath = "/js/shader/vertex.shader") {
+    constructor(fragmentShaderPath = "/js/shader/untexturedFragment.shader", vertexShaderPath = "/js/shader/untexturedVertex.shader") {
         this.#id = Renderable.#nextId++;
 
         if (!Renderable.canvas) {

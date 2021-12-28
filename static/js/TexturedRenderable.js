@@ -9,6 +9,7 @@ class TexturedRenderable extends Renderable {
 
     constructor(imagePath, fragmentShaderPath = "/js/shader/fragment.shader", vertexShaderPath = "/js/shader/vertex.shader") {
         super(fragmentShaderPath, vertexShaderPath);
+        this.visible = false;
         if (imagePath) {
             this.loadImage(imagePath);
         }
@@ -34,6 +35,7 @@ class TexturedRenderable extends Renderable {
             TexturedRenderable.textures[path] = GL.createTextureForImage(img);
             this.texture = TexturedRenderable.textures[path];
             onload(img);
+            this.visible = true;
         }
         img.src = path;
         return img;
