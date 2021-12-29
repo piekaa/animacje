@@ -11,6 +11,7 @@ class Letter extends TexturedRenderable {
     #char;
 
     width = 0;
+    height = 500;
 
     constructor(char) {
         super(undefined, "/js/shader/font/fragment.shader");
@@ -26,8 +27,12 @@ class Letter extends TexturedRenderable {
         this.#loadTexture(char)
     }
 
+    getChar() {
+        return this.#char;
+    }
+
     #loadTexture(char) {
-        let fontSize = 500;
+        let fontSize = this.height;
 
         if (Letter.loadedChars[char]) {
             this.texture = Letter.loadedChars[char].texture;

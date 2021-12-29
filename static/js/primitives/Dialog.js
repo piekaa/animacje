@@ -22,8 +22,8 @@ class Dialog extends AnimatedRenderable {
         PiekoszekEngine.addAsChild(this, new Curve(264.12, 577.74, 259.21, 659.19, 314.12, 677.74, 10));
         this.setPivot(250.65, 227.20)
 
-        const t = new Text(355.07, 490.55, text);
-        t.setScale(0.2, 0.2);
+
+        const t = new Text(300, 478.87, text, 700, 230);
         PiekoszekEngine.addAsChild(this, t);
 
     }
