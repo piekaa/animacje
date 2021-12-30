@@ -12,7 +12,7 @@ import Dialog from "../primitives/Dialog.js";
 
 class InitCompiler {
 
-    static #primitives = {
+    static primitives = {
         "line": Line,
         "square": Square,
         "curve": Curve,
@@ -95,7 +95,7 @@ class InitCompiler {
 
     static #createObject(type, args, parent, pivot) {
 
-        const primitiveType = InitCompiler.#primitives[type];
+        const primitiveType = InitCompiler.primitives[type];
         if (primitiveType) {
             let obj = new primitiveType(...args);
             PiekoszekEngine.addAsChild(parent, obj);

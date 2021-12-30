@@ -21,7 +21,7 @@
         }
 
         textarea {
-            width: 80%;
+            width: 95%;
             font-size: 1em;
         }
 
@@ -116,6 +116,18 @@
             background: #7bab7a;
         }
 
+        .code-and-hints {
+            position: relative;
+            width: 100%;
+        }
+
+        #hints {
+            position: absolute;
+            background: #8ca2ab;
+            font-size: 1.2em;
+            padding: 4px;
+        }
+
     </style>
 
 </head>
@@ -137,7 +149,10 @@
 
     <div>
         <div class="editor">
-            <textarea id="code" spellcheck="false"></textarea>
+            <div class="code-and-hints">
+                <div id="hints"></div>
+                <textarea id="code" spellcheck="false"></textarea>
+            </div>
             <div class="right">
                 <input id="mouse">
                 <button id="compiler">Compile</button>
@@ -160,7 +175,6 @@
 </body>
 
 <script type="module" src="js/main.js">
-
 </script>
 
 </html>

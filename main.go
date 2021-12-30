@@ -12,3 +12,5 @@ func main() {
 
 	e.Logger.Fatal(e.Start(":6813"))
 }
+
+// todo jest jakiś bug w plikach, init z Animations zapisało się jako pierwszy z definitions, może jak się przełączy i coś tam zrobi to tak się dzieje

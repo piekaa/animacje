@@ -5,11 +5,14 @@ import AnimationCompiler from "./compiler/AnimationCompiler.js";
 import InitCompiler from "./compiler/InitCompiler.js";
 import FileStorage from "./files/FileStorage.js";
 import DefinitionPostCompiler from "./definitions/DefinitionPostCompiler.js";
+import Hints from "./editor/Hints.js";
 
 let animationFiles = new Files(true, new FileStorage(), {onLoad: compileAnimation});
 let definitionFiles = new Files(false, new FileStorage("__definitions"), {
     onLoad: () => {
         animationFiles.start();
+        Hints.start()
+        Hints.setDefinitions(definitionFiles.getRawData());
     }
 });
 definitionFiles.start(true);
