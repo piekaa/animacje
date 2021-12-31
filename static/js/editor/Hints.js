@@ -7,16 +7,23 @@ class Hints {
     static #code;
     static #hints;
 
+    static #inHintMenu = false;
+    static #hintMenuKeys = ["ArrowDown", "ArrowUp", "Escape", "Enter"];
+
     static #contextFunctions = {
         "type": Hints.#showTypeHints,
-        "": () => {
-        }
+        "": Hints.#hideHints,
     }
+
+    static #selectedHint = 0;
+    static #currentHintsLength = 0;
 
     static start() {
         Hints.#code = document.getElementById("code");
         Hints.#hints = document.getElementById("hints");
         Hints.#code.addEventListener("input", Hints.#update);
+        Hints.#code.addEventListener("keydown", Hints.#navigationUpdate);
+        // Hints.#code.addEventListener("keyup", Hints.#update);
     }
 
     static setDefinitions(definitions) {
@@ -39,12 +46,32 @@ class Hints {
         }
     }
 
+    static #navigationUpdate(event) {
+        if (Hints.#inHintMenu && Hints.#hintMenuKeys.includes(event.key)) {
+            Hints.#navigateHintsMenu(event)
+            event.preventDefault();
+        }
+    }
+
     static #update(event) {
-        const lineData = Hints.#findCurrentLineAndPosition();
+
+        if (event.key === "Escape") {
+            return;
+        }
+
+        if (Hints.#inHintMenu && Hints.#hintMenuKeys.includes(event.key)) {
+            return;
+        }
+
+        const lineData = Hints.#inputContextData();
+
+        console.log(event);
+
+        console.log(lineData);
         Hints.#contextFunctions[Hints.#detectContext(lineData.textSoFar)](lineData)
     }
 
-    static #findCurrentLineAndPosition() {
+    static #inputContextData() {
         const text = Hints.#code.value;
         const maxPos = Hints.#code.selectionStart;
         let line = 0;
@@ -59,11 +86,18 @@ class Hints {
             }
             position++;
         }
-        return {line: line, position: position, textSoFar: textSoFar};
+        return {
+            line: line,
+            position: position,
+            textSoFar: textSoFar,
+            typeSoFar: textSoFar.split("=")[1]?.trim(),
+            globalPosition: maxPos,
+        };
     }
 
     static #detectContext(text) {
-        if (text.match(/.*=.*/)) {
+        console.log(text + "x");
+        if (text.match(/.*= *[a-zA-Z0-9]*$/)) {
             return "type"
         }
         return "";
@@ -72,9 +106,71 @@ class Hints {
     static #showTypeHints(lineData) {
         const text = lineData.textSoFar;
         const typeStart = text.split("=")[1].trim();
-        Hints.#hints.innerHTML = Array.from(Hints.#types[typeStart] || []).join(", ");
+        Hints.#buildHintMenu(Array.from(Hints.#types[typeStart] || []));
         Hints.#hints.style.left = `${lineData.position * 8 + 10}px`;
         Hints.#hints.style.top = `${lineData.line * 15 + 2}px`;
+    }
+
+    static #buildHintMenu(hints) {
+        if (hints.length === 0) {
+            Hints.#hints.style.display = "none";
+            Hints.#inHintMenu = false;
+            return;
+        }
+        Hints.#hints.style.display = "flex";
+        let i = 0;
+        Hints.#hints.innerHTML = hints.map(hint => `<div id="hint${i++}" class="hint">${hint}</div>`).join("");
+        Hints.#inHintMenu = true;
+        Hints.#currentHintsLength = hints.length;
+        Hints.#selectedHint = -1;
+        Hints.#selectNextHint();
+    }
+
+    static #navigateHintsMenu(event) {
+        switch (event.key) {
+            case "Escape":
+                Hints.#hints.style.display = "none";
+                Hints.#inHintMenu = false;
+                break;
+            case "ArrowDown":
+                Hints.#selectNextHint();
+                break;
+            case "ArrowUp":
+                Hints.#selectPrevHint();
+                break;
+            case "Enter":
+                Hints.#applyHint();
+        }
+    }
+
+    static #selectNextHint() {
+        document.getElementById(`hint${Hints.#selectedHint}`)?.classList.remove("selectedHint");
+        Hints.#selectedHint++;
+        Hints.#selectedHint %= Hints.#currentHintsLength;
+        document.getElementById(`hint${Hints.#selectedHint}`)?.classList.add("selectedHint");
+    }
+
+    static #selectPrevHint() {
+        document.getElementById(`hint${Hints.#selectedHint}`)?.classList.remove("selectedHint");
+        Hints.#selectedHint--;
+        Hints.#selectedHint = ((Hints.#selectedHint % Hints.#currentHintsLength) + Hints.#currentHintsLength) % Hints.#currentHintsLength;
+        document.getElementById(`hint${Hints.#selectedHint}`)?.classList.add("selectedHint");
+    }
+
+    static #applyHint() {
+        Hints.#hints.style.display = "none";
+        Hints.#inHintMenu = false;
+        const data = Hints.#inputContextData();
+        const value = document.getElementById(`hint${Hints.#selectedHint}`).innerText.slice(data.typeSoFar.length);
+        const code = Hints.#code.value;
+        const pos = data.globalPosition;
+        document.getElementById("code").value = code.slice(0, pos) + value + code.slice(pos);
+        Hints.#code.setSelectionRange(pos + value.length, pos + value.length);
+    }
+
+
+    static #hideHints() {
+        Hints.#hints.style.display = "none";
     }
 
 }
