@@ -4,8 +4,16 @@ import Camera from "./Camera.js";
 class Mouse {
 
     static rightDown = false;
+    static leftDownThisFrame = false;
+    static leftDown = false;
+
     static startLMX;
     static startLMY;
+
+    static wmx;
+    static wmy;
+
+
     static startCameraPos;
     static camera;
 
@@ -28,18 +36,28 @@ class Mouse {
             const wmx = (((-Camera.current.worldPositionVector.x + mx) / (Camera.current.scale.sx()) / canvasScale) * (canvasScale)).toFixed(2);
             const wmy = (((-Camera.current.worldPositionVector.y + my) / (Camera.current.scale.sy()) / canvasScale) * (canvasScale)).toFixed(2);
 
+            Mouse.wmx = parseFloat(wmx);
+            Mouse.wmy = parseFloat(wmy);
+
             if (event.button === 0) {
                 const mouseElement = document.getElementById("mouse");
                 mouseElement.value = `${wmx}, ${wmy}`;
                 mouseElement.select();
                 mouseElement.setSelectionRange(0, 20);
                 navigator.clipboard.writeText(mouseElement.value);
+
+
+                Mouse.leftDown = true;
+                Mouse.leftDownThisFrame = true;
+                Mouse.startRMX = mx;
+                Mouse.startRMY = my;
+                Mouse.startCameraPos = Camera.current.position;
             }
 
             if (event.button === 2) {
                 Mouse.rightDown = true;
-                Mouse.startLMX = mx;
-                Mouse.startLMY = my;
+                Mouse.startRMX = mx;
+                Mouse.startRMY = my;
                 Mouse.startCameraPos = Camera.current.position;
             }
 
@@ -49,14 +67,26 @@ class Mouse {
             if (event.button === 2) {
                 Mouse.rightDown = false;
             }
+            if (event.button === 0) {
+                Mouse.leftDown = false;
+            }
+            this.leftDownThisFrame = false;
         }, false);
 
         canvas.addEventListener("mousemove", (event) => {
             const mx = event.offsetX * canvasScale;
             const my = (event.target.clientHeight - parseFloat(getComputedStyle(event.target).paddingBottom) - event.offsetY) * canvasScale;
 
+            const wmx = (((-Camera.current.worldPositionVector.x + mx) / (Camera.current.scale.sx()) / canvasScale) * (canvasScale)).toFixed(2);
+            const wmy = (((-Camera.current.worldPositionVector.y + my) / (Camera.current.scale.sy()) / canvasScale) * (canvasScale)).toFixed(2);
+
+            Mouse.wmx = parseFloat(wmx);
+            Mouse.wmy = parseFloat(wmy);
+
+            Mouse.leftDownThisFrame = false;
+
             if (this.rightDown) {
-                Camera.current.position = Mouse.startCameraPos.multiply(Matrix2D.Translation((Mouse.startLMX - mx) * (1 / Camera.current.scale.sx()), (Mouse.startLMY - my) * (1 / Camera.current.scale.sy())));
+                Camera.current.position = Mouse.startCameraPos.multiply(Matrix2D.Translation((Mouse.startRMX - mx) * (1 / Camera.current.scale.sx()), (Mouse.startRMY - my) * (1 / Camera.current.scale.sy())));
             }
 
         }, false);

@@ -1,10 +1,11 @@
 import InitCompiler from "../compiler/InitCompiler.js";
+import HintPoints from "./HintPoints.js";
 
 class Hints {
 
     static #types = []
 
-    static #code;
+    static code;
     static #hints;
 
     static #inHintMenu = false;
@@ -12,17 +13,29 @@ class Hints {
 
     static #contextFunctions = {
         "type": Hints.#showTypeHints,
+        "line": Hints.#lineHints,
         "": Hints.#hideHints,
     }
+
+    static #contextRegexps = [
+        {
+            context: "line",
+            reg: /.*= *line *\(.*\)/,
+        },
+        {
+            context: "type",
+            reg: /.*= *[a-zA-Z0-9]*$/
+        }
+    ]
 
     static #selectedHint = 0;
     static #currentHintsLength = 0;
 
     static start() {
-        Hints.#code = document.getElementById("code");
+        Hints.code = document.getElementById("code");
         Hints.#hints = document.getElementById("hints");
-        Hints.#code.addEventListener("input", Hints.#update);
-        Hints.#code.addEventListener("keydown", Hints.#navigationUpdate);
+        Hints.code.addEventListener("input", Hints.#update);
+        Hints.code.addEventListener("keydown", Hints.#navigationUpdate);
         // Hints.#code.addEventListener("keyup", Hints.#update);
     }
 
@@ -65,21 +78,20 @@ class Hints {
 
         const lineData = Hints.#inputContextData();
 
-        console.log(event);
-
-        console.log(lineData);
         Hints.#contextFunctions[Hints.#detectContext(lineData.textSoFar)](lineData)
     }
 
     static #inputContextData() {
-        const text = Hints.#code.value;
-        const maxPos = Hints.#code.selectionStart;
+        const text = Hints.code.value;
+        const maxPos = Hints.code.selectionStart;
         let line = 0;
         let position = 0;
+        let lineStartPosition = 0;
         let textSoFar = "";
         for (let i = 0; i < maxPos; i++) {
             textSoFar += text[i];
             if (text[i] === '\n') {
+                lineStartPosition = i + 1;
                 line++;
                 position = -1;
                 textSoFar = "";
@@ -92,13 +104,16 @@ class Hints {
             textSoFar: textSoFar,
             typeSoFar: textSoFar.split("=")[1]?.trim(),
             globalPosition: maxPos,
+            lineStartPosition: lineStartPosition
         };
     }
 
     static #detectContext(text) {
         console.log(text + "x");
-        if (text.match(/.*= *[a-zA-Z0-9]*$/)) {
-            return "type"
+        for (let contextRegexp of Hints.#contextRegexps) {
+            if (text.match(contextRegexp.reg)) {
+                return contextRegexp.context;
+            }
         }
         return "";
     }
@@ -162,15 +177,20 @@ class Hints {
         Hints.#inHintMenu = false;
         const data = Hints.#inputContextData();
         const value = document.getElementById(`hint${Hints.#selectedHint}`).innerText.slice(data.typeSoFar.length);
-        const code = Hints.#code.value;
+        const code = Hints.code.value;
         const pos = data.globalPosition;
         document.getElementById("code").value = code.slice(0, pos) + value + code.slice(pos);
-        Hints.#code.setSelectionRange(pos + value.length, pos + value.length);
+        Hints.code.setSelectionRange(pos + value.length, pos + value.length);
     }
 
 
     static #hideHints() {
         Hints.#hints.style.display = "none";
+    }
+
+    static #lineHints() {
+        const data = Hints.#inputContextData();
+        new HintPoints(data);
     }
 
 }
