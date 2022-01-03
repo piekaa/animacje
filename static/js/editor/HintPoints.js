@@ -12,15 +12,15 @@ class HintPoints {
 
     width = 1;
 
-    constructor(lineData) {
+    compileFunction
 
+    constructor(lineData, compileFunction) {
+        this.compileFunction = compileFunction;
         this.data = lineData;
 
         const args = lineData.textSoFar.split(/[()]/)[1].split(",")
             .map(arg => arg.trim())
             .map(arg => parseFloat(arg));
-
-        console.log(args);
 
         this.p1 = new Square(args[0], args[1], 30);
         this.p2 = new Square(args[2], args[3], 30);
@@ -34,8 +34,6 @@ class HintPoints {
     }
 
     updateCode() {
-        console.log(this.data.textSoFar);
-
         const x1 = this.p1.position.x().toFixed(2);
         const y1 = this.p1.position.y().toFixed(2);
         const x2 = this.p2.position.x().toFixed(2);
@@ -44,17 +42,27 @@ class HintPoints {
         const newTextSoFar = this.data.textSoFar.replace(/\(.*\)/,
             `(${x1}, ${y1}, ${x2}, ${y2}, ${this.width})`);
 
-        console.log(newTextSoFar);
-
         const code = Hints.code.value;
 
         Hints.code.value = code.slice(0, this.data.lineStartPosition)
-            + newTextSoFar;
+            + newTextSoFar + code.slice(this.data.nextLineStartPosition);
         Hints.code.dispatchEvent(new Event('input'));
+
+        const newCarrot = this.data.globalPosition - (code.length - Hints.code.value.length);
+        Hints.code.setSelectionRange(newCarrot, newCarrot);
+
+        this.compileFunction();
+
+        Hints.code.focus();
     }
 
     destroy() {
-
+        this.p1.visible = false;
+        this.p2.visible = false;
+        this.p1.update = () => {
+        };
+        this.p2.update = () => {
+        };
     }
 
 }

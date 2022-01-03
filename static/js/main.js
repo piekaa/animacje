@@ -11,7 +11,7 @@ let animationFiles = new Files(true, new FileStorage(), {onLoad: compileAnimatio
 let definitionFiles = new Files(false, new FileStorage("__definitions"), {
     onLoad: () => {
         animationFiles.start();
-        Hints.start()
+        Hints.start(compile)
         Hints.setDefinitions(definitionFiles.getRawData());
     }
 });
@@ -31,7 +31,9 @@ let animator;
 
 let progress = document.getElementById("progress");
 
-document.getElementById("compiler").onclick = () => {
+document.getElementById("compiler").onclick = compile;
+
+function compile() {
     if (tab === "animation") {
         compileAnimation();
     }

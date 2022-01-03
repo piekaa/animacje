@@ -8,6 +8,8 @@ class Hints {
     static code;
     static #hints;
 
+    static #currentHintPoints;
+
     static #inHintMenu = false;
     static #hintMenuKeys = ["ArrowDown", "ArrowUp", "Escape", "Enter"];
 
@@ -31,11 +33,16 @@ class Hints {
     static #selectedHint = 0;
     static #currentHintsLength = 0;
 
-    static start() {
+    static #compileFunction;
+
+    static start(compileFunction) {
         Hints.code = document.getElementById("code");
         Hints.#hints = document.getElementById("hints");
         Hints.code.addEventListener("input", Hints.#update);
+        Hints.code.addEventListener("click", Hints.#update);
+        Hints.code.addEventListener("focus", Hints.#update);
         Hints.code.addEventListener("keydown", Hints.#navigationUpdate);
+        Hints.#compileFunction = compileFunction;
         // Hints.#code.addEventListener("keyup", Hints.#update);
     }
 
@@ -78,6 +85,10 @@ class Hints {
 
         const lineData = Hints.#inputContextData();
 
+        // console.log(lineData.textSoFar);
+        // console.log(Hints.#detectContext(lineData.textSoFar));
+        // console.log("")
+
         Hints.#contextFunctions[Hints.#detectContext(lineData.textSoFar)](lineData)
     }
 
@@ -98,18 +109,22 @@ class Hints {
             }
             position++;
         }
+
+        const newLineSearchResult = text.indexOf("\n", maxPos);
+
         return {
             line: line,
             position: position,
             textSoFar: textSoFar,
             typeSoFar: textSoFar.split("=")[1]?.trim(),
             globalPosition: maxPos,
-            lineStartPosition: lineStartPosition
+            lineStartPosition: lineStartPosition,
+            nextLineStartPosition: newLineSearchResult === -1 ? text.length : newLineSearchResult
         };
     }
 
     static #detectContext(text) {
-        console.log(text + "x");
+        this.#currentHintPoints?.destroy();
         for (let contextRegexp of Hints.#contextRegexps) {
             if (text.match(contextRegexp.reg)) {
                 return contextRegexp.context;
@@ -190,7 +205,7 @@ class Hints {
 
     static #lineHints() {
         const data = Hints.#inputContextData();
-        new HintPoints(data);
+        Hints.#currentHintPoints = new HintPoints(data, Hints.#compileFunction);
     }
 
 }
