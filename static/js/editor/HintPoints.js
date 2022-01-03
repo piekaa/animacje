@@ -5,16 +5,12 @@ import Hints from "./Hints.js";
 
 class HintPoints {
 
-    p1
-    p2
-
+    points = []
     data
-
     width = 1;
-
     compileFunction
 
-    constructor(lineData, compileFunction) {
+    constructor(lineData, numberOfPoints, compileFunction) {
         this.compileFunction = compileFunction;
         this.data = lineData;
 
@@ -22,25 +18,27 @@ class HintPoints {
             .map(arg => arg.trim())
             .map(arg => parseFloat(arg));
 
-        this.p1 = new Square(args[0], args[1], 30);
-        this.p2 = new Square(args[2], args[3], 30);
-        this.width = args[4] || 1;
+        for (let i = 0; i < numberOfPoints; i++) {
+            this.points.push(new Square(args[i * 2], args[i * 2 + 1], 30));
+        }
+        this.width = args[numberOfPoints * 2];
 
-        DragAndDropExtension.updateExtension(this.p1, 45, this.updateCode.bind(this));
-        DragAndDropExtension.updateExtension(this.p2, 45, this.updateCode.bind(this));
-
-        PiekoszekEngine.add(this.p1);
-        PiekoszekEngine.add(this.p2);
+        this.points.forEach(p => {
+            DragAndDropExtension.updateExtension(p, 45, this.updateCode.bind(this));
+            PiekoszekEngine.add(p);
+        });
     }
 
     updateCode() {
-        const x1 = this.p1.position.x().toFixed(2);
-        const y1 = this.p1.position.y().toFixed(2);
-        const x2 = this.p2.position.x().toFixed(2);
-        const y2 = this.p2.position.y().toFixed(2);
+        let coordinates = "(";
+
+        this.points.forEach(p => {
+            coordinates += `${p.position.x()}, ${p.position.y()}, `;
+        });
+
 
         const newTextSoFar = this.data.textSoFar.replace(/\(.*\)/,
-            `(${x1}, ${y1}, ${x2}, ${y2}, ${this.width})`);
+            `${coordinates}${this.width})`);
 
         const code = Hints.code.value;
 
@@ -57,14 +55,10 @@ class HintPoints {
     }
 
     destroy() {
-        this.p1.visible = false;
-        this.p2.visible = false;
-        this.p1.update = () => {
-        };
-        this.p2.update = () => {
-        };
+        this.points.forEach(p => {
+            PiekoszekEngine.remove(p);
+        });
     }
-
 }
 
 export default HintPoints

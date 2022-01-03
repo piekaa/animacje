@@ -16,6 +16,7 @@ class Hints {
     static #contextFunctions = {
         "type": Hints.#showTypeHints,
         "line": Hints.#lineHints,
+        "curve": Hints.#curveHints,
         "": Hints.#hideHints,
     }
 
@@ -23,6 +24,10 @@ class Hints {
         {
             context: "line",
             reg: /.*= *line *\(.*\)/,
+        },
+        {
+            context: "curve",
+            reg: /.*= *curve *\(.*\)/,
         },
         {
             context: "type",
@@ -205,7 +210,12 @@ class Hints {
 
     static #lineHints() {
         const data = Hints.#inputContextData();
-        Hints.#currentHintPoints = new HintPoints(data, Hints.#compileFunction);
+        Hints.#currentHintPoints = new HintPoints(data, 2, Hints.#compileFunction);
+    }
+
+    static #curveHints() {
+        const data = Hints.#inputContextData();
+        Hints.#currentHintPoints = new HintPoints(data, 3, Hints.#compileFunction);
     }
 
 }

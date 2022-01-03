@@ -68,6 +68,7 @@ class PiekoszekEngine {
 
     static remove(renderable) {
         renderable.visible = false;
+        renderable.update = () => {};
         PiekoszekEngine.#renderablesToRemove.push(renderable);
     }
 
