@@ -48,7 +48,9 @@ class PiekoszekEngine {
         PiekoszekEngine.#rootRenderable.isReady = () => {
             return false;
         }
-        new Camera();
+        if (!Camera.current) {
+            new Camera();
+        }
     }
 
     static add(renderable, isPotected = false) {
@@ -68,7 +70,8 @@ class PiekoszekEngine {
 
     static remove(renderable) {
         renderable.visible = false;
-        renderable.update = () => {};
+        renderable.update = () => {
+        };
         PiekoszekEngine.#renderablesToRemove.push(renderable);
     }
 

@@ -1,7 +1,7 @@
 import Square from "../primitives/Square.js";
 import PiekoszekEngine from "../PiekoszekEngine.js";
 import DragAndDropExtension from "../extensions/DragAndDropExtension.js";
-import Hints from "./Hints.js";
+import HintsGlobals from "./HintsGlobals.js";
 
 class HintPoints {
 
@@ -36,22 +36,19 @@ class HintPoints {
             coordinates += `${p.position.x()}, ${p.position.y()}, `;
         });
 
-
         const newTextSoFar = this.data.textSoFar.replace(/\(.*\)/,
             `${coordinates}${this.width})`);
 
-        const code = Hints.code.value;
+        const code = HintsGlobals.codeElement.value;
 
-        Hints.code.value = code.slice(0, this.data.lineStartPosition)
-            + newTextSoFar + code.slice(this.data.nextLineStartPosition);
-        Hints.code.dispatchEvent(new Event('input'));
+        HintsGlobals.updateCode(code.slice(0, this.data.lineStartPosition)
+            + newTextSoFar + code.slice(this.data.nextLineStartPosition));
 
-        const newCarrot = this.data.globalPosition - (code.length - Hints.code.value.length);
-        Hints.code.setSelectionRange(newCarrot, newCarrot);
+        const newCarrot = this.data.globalPosition - (code.length - HintsGlobals.codeElement.value.length);
+        HintsGlobals.codeElement.setSelectionRange(newCarrot, newCarrot);
 
         this.compileFunction();
-
-        Hints.code.focus();
+        HintsGlobals.focusCode();
     }
 
     destroy() {
