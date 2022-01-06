@@ -33,6 +33,8 @@ class TypeHints {
             TypeHints.#types[name].add(type);
             name += type[i];
         }
+        TypeHints.#types[name] ||= new Set();
+        TypeHints.#types[name].add(type);
     }
 
     static showTypeHints(lineData) {
@@ -94,7 +96,8 @@ class TypeHints {
         TypeHints.inHintMenu = false;
         const data = CodeAnalysis.inputContextData();
         const type = document.getElementById(`hint${TypeHints.#selectedHint}`).innerText;
-        const value = AutofillFunctions.functions[type]?.(data.typeSoFar) || type.slice(data.typeSoFar.length);
+        const value = AutofillFunctions.functions[type]?.(data.typeSoFar, type)
+            || AutofillFunctions.functions["customType"](data.typeSoFar, type);
         const code = HintsGlobals.codeElement.value;
         const pos = data.globalPosition;
         HintsGlobals.updateCode(code.slice(0, pos) + value + code.slice(pos));
@@ -102,7 +105,6 @@ class TypeHints {
         HintsGlobals.compileFunction();
         HintsGlobals.focusCode();
     }
-
 
     static hideHints() {
         TypeHints.#hints.style.display = "none";

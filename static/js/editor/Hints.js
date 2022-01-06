@@ -11,6 +11,7 @@ class Hints {
         "type": TypeHints.showTypeHints,
         "line": PointHints.lineHints,
         "curve": PointHints.curveHints,
+        "customType": PointHints.customTypeHints,
         "": TypeHints.hideHints,
     }
 
@@ -41,6 +42,10 @@ class Hints {
 
     static setDefinitions(definitions) {
         TypeHints.setDefinitions(definitions);
+        Hints.#contextRegexps.push(...definitions.map(def => ({
+            context: "customType",
+            reg: new RegExp(`.*= *${def.name} *\\(.*\\)`)
+        })));
     }
 
     static #navigationUpdate(event) {
@@ -72,6 +77,8 @@ class Hints {
                 return contextRegexp.context;
             }
         }
+
+
         return "";
     }
 

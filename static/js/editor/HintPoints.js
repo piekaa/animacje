@@ -8,9 +8,11 @@ class HintPoints {
     points = []
     data
     width = 1;
+    lineUpdateFunction
     compileFunction
 
-    constructor(lineData, numberOfPoints, compileFunction) {
+    constructor(lineData, numberOfPoints, lineUpdateFunction, compileFunction) {
+        this.lineUpdateFunction = lineUpdateFunction;
         this.compileFunction = compileFunction;
         this.data = lineData;
 
@@ -21,28 +23,23 @@ class HintPoints {
         for (let i = 0; i < numberOfPoints; i++) {
             this.points.push(new Square(args[i * 2], args[i * 2 + 1], 30));
         }
-        this.width = args[numberOfPoints * 2];
+        this.width = args[numberOfPoints * 2] || 1;
 
         this.points.forEach(p => {
             DragAndDropExtension.updateExtension(p, 45, this.updateCode.bind(this));
             PiekoszekEngine.add(p);
+            p.setColor(1, 0, 0, 1);
+            p.zIndex = 9999;
         });
     }
 
     updateCode() {
-        let coordinates = "(";
-
-        this.points.forEach(p => {
-            coordinates += `${p.position.x()}, ${p.position.y()}, `;
-        });
-
-        const newTextSoFar = this.data.textSoFar.replace(/\(.*\)/,
-            `${coordinates}${this.width})`);
+        const updatedLine = this.lineUpdateFunction(this.data.textSoFar, this.points, this.width);
 
         const code = HintsGlobals.codeElement.value;
 
         HintsGlobals.updateCode(code.slice(0, this.data.lineStartPosition)
-            + newTextSoFar + code.slice(this.data.nextLineStartPosition));
+            + updatedLine + code.slice(this.data.nextLineStartPosition));
 
         const newCarrot = this.data.globalPosition - (code.length - HintsGlobals.codeElement.value.length);
         HintsGlobals.codeElement.setSelectionRange(newCarrot, newCarrot);

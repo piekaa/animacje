@@ -8,6 +8,8 @@ class Files {
     #storage;
     #withInitFile;
 
+    #stopped = false;
+
     #intervalId;
 
     #onFileSelect;
@@ -46,18 +48,25 @@ class Files {
 
                 this.#select(0);
 
-
-                document.getElementById("code").addEventListener("input", (event) => {
-                    this.#allFiles[this.#selected].content = event.target.value;
-                });
+                if (!onlyLoad) {
+                    document.getElementById("code").addEventListener("input", this.#updateCode.bind(this));
+                }
 
                 this.#intervalId = setInterval(this.#save.bind(this), 1000);
                 this.#onLoad();
             });
     }
 
+    #updateCode(event) {
+        if (this.#stopped) {
+            return;
+        }
+        this.#allFiles[this.#selected].content = event.target.value;
+    }
+
     stop() {
         clearInterval(this.#intervalId);
+        this.#stopped = true;
     }
 
     #newFile() {

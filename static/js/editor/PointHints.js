@@ -1,6 +1,7 @@
 import CodeAnalysis from "./CodeAnalysis.js";
 import HintPoints from "./HintPoints.js";
 import HintsGlobals from "./HintsGlobals.js";
+import LineUpdateFunctions from "./LineUpdateFunctions.js";
 
 class PointHints {
 
@@ -12,12 +13,17 @@ class PointHints {
 
     static lineHints() {
         const data = CodeAnalysis.inputContextData();
-        PointHints.#currentHintPoints = new HintPoints(data, 2, HintsGlobals.compileFunction);
+        PointHints.#currentHintPoints = new HintPoints(data, 2, LineUpdateFunctions.pointsAndWidth, HintsGlobals.compileFunction);
     }
 
     static curveHints() {
         const data = CodeAnalysis.inputContextData();
-        PointHints.#currentHintPoints = new HintPoints(data, 3, HintsGlobals.compileFunction);
+        PointHints.#currentHintPoints = new HintPoints(data, 3, LineUpdateFunctions.pointsAndWidth, HintsGlobals.compileFunction);
+    }
+
+    static customTypeHints() {
+        const data = CodeAnalysis.inputContextData();
+        PointHints.#currentHintPoints = new HintPoints(data, 1, LineUpdateFunctions.point, HintsGlobals.compileFunction);
     }
 }
 
