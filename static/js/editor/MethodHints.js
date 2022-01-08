@@ -24,14 +24,14 @@ class MethodHints extends MenuHints {
         this.hints.style.display = "none";
         const data = CodeAnalysis.inputContextData();
         const method = document.getElementById(`hint${this.selectedHint}`).innerText;
-        const value = AutofillFunctions.functions[method]?.(data.typeSoFar, method)
-            || AutofillFunctions.functions["method"](data.typeSoFar, method);
+        const value = AutofillFunctions.functions["method"](data.textSoFar, method);
         const code = HintsGlobals.codeElement.value;
         const pos = data.globalPosition;
         HintsGlobals.updateCode(code.slice(0, pos) + value + code.slice(pos));
         HintsGlobals.codeElement.setSelectionRange(pos + value.length, pos + value.length);
         HintsGlobals.compileFunction();
         HintsGlobals.focusCode();
+        this.destroy();
     }
 
 }

@@ -7,8 +7,13 @@ class MenuHints {
     currentHintsLength = 0;
     items = []
     inHintMenu = false;
+    instance
 
-    constructor(items) {
+    destroyCallback
+
+    constructor(items, destroyCallback) {
+        this.instance = this;
+        this.destroyCallback = destroyCallback;
         this.hints = document.getElementById("hints");
         this.addItems(items);
         const lineData = CodeAnalysis.inputContextData();
@@ -19,7 +24,7 @@ class MenuHints {
         this.hints.style.top = `${lineData.line * 15 + 2}px`;
     }
 
-    cutLine(text){
+    cutLine(text) {
         throw new Error("Should be implemented by subclass");
     }
 
@@ -40,8 +45,7 @@ class MenuHints {
 
     buildHintMenu(hints) {
         if (hints.length === 0) {
-            this.hints.style.display = "none";
-            this.inHintMenu = false;
+            this.destroy();
             return;
         }
         this.hints.style.display = "flex";
@@ -56,8 +60,7 @@ class MenuHints {
     navigateHintsMenu(event) {
         switch (event.key) {
             case "Escape":
-                this.hints.style.display = "none";
-                this.inHintMenu = false;
+                this.destroy();
                 break;
             case "ArrowDown":
                 this.selectNextHint();
@@ -68,6 +71,10 @@ class MenuHints {
             case "Enter":
                 this.applyHint();
         }
+    }
+
+    applyHint() {
+        throw new Error("Should be implemented by subclass");
     }
 
     selectNextHint() {
@@ -87,6 +94,8 @@ class MenuHints {
     destroy() {
         this.hints.style.display = "none";
         this.inHintMenu = false;
+        this.destroyCallback?.();
+        this.instance = undefined;
     }
 }
 

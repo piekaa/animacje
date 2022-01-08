@@ -14,6 +14,11 @@ class LineUpdateFunctions {
         return textSoFar.replace(/\(.*\)/, coordinates);
     }
 
+    static pointAndTime(textSoFar, points) {
+        let args = `(${points[0].position.x()}, ${points[0].position.y()}, "1s")`;
+        return textSoFar.replace(/\(.*\)/, args);
+    }
+
 }
 
 export default LineUpdateFunctions

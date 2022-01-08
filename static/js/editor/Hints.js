@@ -15,24 +15,29 @@ class Hints {
 
     static #contextFunctions = {
         "type": () => {
-            Hints.currentMenuHints = new TypeHints(Hints.definitions);
+            Hints.currentMenuHints = new TypeHints(Hints.definitions, Hints.destroyCallback).instance;
         },
         "variable": () => {
-            Hints.currentMenuHints = new VariableHints(Object.keys(InitCompiler.variables()));
+            Hints.currentMenuHints = new VariableHints(Object.keys(InitCompiler.variables()), Hints.destroyCallback).instance;
         },
         "method": () => {
             Hints.currentMenuHints = new MethodHints([
                 "move",
                 "moveSmooth",
                 "moveWiggle"
-            ]);
+            ], Hints.destroyCallback).instance;
         },
         "line": PointHints.lineHints,
         "curve": PointHints.curveHints,
         "customType": PointHints.customTypeHints,
+        "call": PointHints.callHints,
         "": () => {
             Hints.currentMenuHints = Hints.currentMenuHints?.destroy()
         },
+    }
+
+    static destroyCallback() {
+        Hints.currentMenuHints = undefined;
     }
 
     static #contextRegexps = [
@@ -55,6 +60,10 @@ class Hints {
         {
             context: "method",
             reg: /^ *[a-zA-Z0-9]*\. *[a-zA-Z0-9]*$/
+        },
+        {
+            context: "call",
+            reg: /^.*\..*\(.*\) *$/
         }
     ]
 
@@ -69,6 +78,7 @@ class Hints {
 
     static setDefinitions(definitions) {
         Hints.definitions = definitions.map(def => def.name);
+        Hints.definitions.push("square", "line", "curve");
         Hints.#contextRegexps.push(...definitions.map(def => ({
             context: "customType",
             reg: new RegExp(`.*= *${def.name} *\\(.*\\)`)
@@ -76,14 +86,13 @@ class Hints {
     }
 
     static #navigationUpdate(event) {
-        if (Hints.#menuNavigationKeys.includes(event.key)) {
+        if (Hints.currentMenuHints && Hints.#menuNavigationKeys.includes(event.key)) {
             Hints.currentMenuHints.navigateHintsMenu(event)
             event.preventDefault();
         }
     }
 
     static #update(event) {
-
         if (event.key === "Escape") {
             return;
         }
@@ -93,18 +102,20 @@ class Hints {
         }
 
         const lineData = CodeAnalysis.inputContextData();
+
+        console.log(Hints.#detectContext(lineData.textSoFar));
+
         Hints.#contextFunctions[Hints.#detectContext(lineData.textSoFar)](lineData)
     }
 
     static #detectContext(text) {
         PointHints.hide();
+        Hints.currentMenuHints = Hints.currentMenuHints?.destroy();
         for (let contextRegexp of Hints.#contextRegexps) {
             if (text.match(contextRegexp.reg)) {
                 return contextRegexp.context;
             }
         }
-
-
         return "";
     }
 

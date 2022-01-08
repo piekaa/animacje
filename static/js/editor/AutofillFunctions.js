@@ -30,7 +30,7 @@ class AutofillFunctions {
     static #method(typeSoFar="", method) {
         const tp = AutofillFunctions.#translatedPoint;
         const autofill = `${method}(${tp(400, 400)}, "1s")`;
-        return AutofillFunctions.#cutTypeSoFar(typeSoFar, autofill);
+        return AutofillFunctions.#cutTypeSoFar(typeSoFar.split(".")[1], autofill);
     }
 
     static #translatedPoint(x, y) {

@@ -33,6 +33,7 @@ class TypeHints extends MenuHints {
         HintsGlobals.codeElement.setSelectionRange(pos + value.length, pos + value.length);
         HintsGlobals.compileFunction();
         HintsGlobals.focusCode();
+        this.destroy();
     }
 }
 
