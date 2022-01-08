@@ -1,12 +1,12 @@
-import CodeAnalysis from "./CodeAnalysis.js";
-import HintsGlobals from "./HintsGlobals.js";
-import AutofillFunctions from "./AutofillFunctions.js";
 import MenuHints from "./MenuHints.js";
+import CodeAnalysis from "./CodeAnalysis.js";
+import AutofillFunctions from "./AutofillFunctions.js";
+import HintsGlobals from "./HintsGlobals.js";
 
-class TypeHints extends MenuHints {
+class MethodHints extends MenuHints {
 
     cutLine(text) {
-        return text.split("=")[1].trim();
+        return text.split(".")[1].trim();
     }
 
     addItem(type) {
@@ -20,13 +20,12 @@ class TypeHints extends MenuHints {
         this.items[name].add(type);
     }
 
-
     applyHint() {
         this.hints.style.display = "none";
         const data = CodeAnalysis.inputContextData();
-        const type = document.getElementById(`hint${this.selectedHint}`).innerText;
-        const value = AutofillFunctions.functions[type]?.(data.typeSoFar, type)
-            || AutofillFunctions.functions["customType"](data.typeSoFar, type);
+        const method = document.getElementById(`hint${this.selectedHint}`).innerText;
+        const value = AutofillFunctions.functions[method]?.(data.typeSoFar, method)
+            || AutofillFunctions.functions["method"](data.typeSoFar, method);
         const code = HintsGlobals.codeElement.value;
         const pos = data.globalPosition;
         HintsGlobals.updateCode(code.slice(0, pos) + value + code.slice(pos));
@@ -34,6 +33,7 @@ class TypeHints extends MenuHints {
         HintsGlobals.compileFunction();
         HintsGlobals.focusCode();
     }
+
 }
 
-export default TypeHints
+export default MethodHints

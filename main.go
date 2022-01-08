@@ -14,3 +14,7 @@ func main() {
 }
 
 // todo jest jakiś bug w plikach, init z Animations zapisało się jako pierwszy z definitions, może jak się przełączy i coś tam zrobi to tak się dzieje
+
+// todo definicje w podpowiedziach od razu, a nie po restarcie
+
+// todo variable hints i type hints do jednego, potem dodać methodHints

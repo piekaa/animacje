@@ -6,6 +6,7 @@ class AutofillFunctions {
         "line": AutofillFunctions.#line,
         "curve": AutofillFunctions.#curve,
         "customType": AutofillFunctions.#customType,
+        "method": AutofillFunctions.#method
     }
 
     static #line(typeSoFar) {
@@ -23,6 +24,12 @@ class AutofillFunctions {
     static #customType(typeSoFar, type) {
         const tp = AutofillFunctions.#translatedPoint;
         const autofill = `${type}(${tp(400, 400)})`;
+        return AutofillFunctions.#cutTypeSoFar(typeSoFar, autofill);
+    }
+
+    static #method(typeSoFar="", method) {
+        const tp = AutofillFunctions.#translatedPoint;
+        const autofill = `${method}(${tp(400, 400)}, "1s")`;
         return AutofillFunctions.#cutTypeSoFar(typeSoFar, autofill);
     }
 

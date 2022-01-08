@@ -133,6 +133,9 @@ class InitCompiler {
         });
     }
 
+    static variables() {
+        return InitCompiler.#variables;
+    }
 }
 
 export default InitCompiler
