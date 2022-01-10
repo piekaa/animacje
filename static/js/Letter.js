@@ -49,7 +49,7 @@ class Letter extends TexturedRenderable {
         context.fillStyle = "#F00";
         context.fill();
 
-        context.font = `${fontSize}px serif`;
+        context.font = `${fontSize}px monospace`;
         context.textBaseline = "middle";
         context.fillStyle = "#0F0";
         context.fillText(`${char}`, 0, Letter.#fontCanvas.height / 2);

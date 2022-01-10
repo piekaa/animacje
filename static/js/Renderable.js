@@ -130,9 +130,16 @@ class Renderable {
         }
         GL.applyMatrix(this.transformation, "transformation");
         GL.applyMatrixArray(view, "view");
-        GL.applyColor(this.color);
 
+        //todo find good alpha function
+        let [r, g, b, a] = this.color;
 
+        let parent = this.parent;
+        while (parent) {
+            a *= parent.color[3];
+            parent = parent.parent;
+        }
+        GL.applyColor([r, g, b, a]);
         if (this.useTexcoord) {
             GL.drawTriangleStripPositionAndTexcoord(this.vertexData, "vertexPosition", "vertexTextureCoordinate");
         } else {

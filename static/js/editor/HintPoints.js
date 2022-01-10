@@ -11,7 +11,7 @@ class HintPoints {
     lineUpdateFunction
     compileFunction
 
-    constructor(lineData, numberOfPoints, lineUpdateFunction, compileFunction) {
+    constructor(lineData, numberOfPoints, lineUpdateFunction, compileFunction, skipArgs = 0) {
         this.lineUpdateFunction = lineUpdateFunction;
         this.compileFunction = compileFunction;
         this.data = lineData;
@@ -21,7 +21,7 @@ class HintPoints {
             .map(arg => parseFloat(arg));
 
         for (let i = 0; i < numberOfPoints; i++) {
-            this.points.push(new Square(args[i * 2], args[i * 2 + 1], 30));
+            this.points.push(new Square(args[i * 2 + skipArgs], args[i * 2 + 1 + skipArgs], 30));
         }
         this.width = args[numberOfPoints * 2] || 1;
 
@@ -29,7 +29,7 @@ class HintPoints {
             DragAndDropExtension.updateExtension(p, 45, this.updateCode.bind(this));
             PiekoszekEngine.add(p);
             p.setColor(1, 0, 0, 1);
-            p.zIndex = 9999;
+            p.zIndex = 99999999;
         });
     }
 

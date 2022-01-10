@@ -1,10 +1,12 @@
 import Camera from "../Camera.js";
+import MethodAutofillFunctions from "./MethodAutofillFunctions.js";
 
 class AutofillFunctions {
 
     static functions = {
         "line": AutofillFunctions.#line,
         "curve": AutofillFunctions.#curve,
+        "text": AutofillFunctions.#text,
         "customType": AutofillFunctions.#customType,
         "method": AutofillFunctions.#method
     }
@@ -12,6 +14,12 @@ class AutofillFunctions {
     static #line(typeSoFar) {
         const tp = AutofillFunctions.#translatedPoint;
         const autofill = `line(${tp(100, 100)}, ${tp(800, 800)}, 10)`;
+        return AutofillFunctions.#cutTypeSoFar(typeSoFar, autofill);
+    }
+
+    static #text(typeSoFar) {
+        const tp = AutofillFunctions.#translatedPoint;
+        const autofill = `text("abc", ${tp(100, 100)})`;
         return AutofillFunctions.#cutTypeSoFar(typeSoFar, autofill);
     }
 
@@ -27,9 +35,9 @@ class AutofillFunctions {
         return AutofillFunctions.#cutTypeSoFar(typeSoFar, autofill);
     }
 
-    static #method(typeSoFar="", method) {
+    static #method(typeSoFar = "", method) {
         const tp = AutofillFunctions.#translatedPoint;
-        const autofill = `${method}(${tp(400, 400)}, "1s")`;
+        const autofill = MethodAutofillFunctions.functions[method](method, tp(400,400));
         return AutofillFunctions.#cutTypeSoFar(typeSoFar.split(".")[1], autofill);
     }
 

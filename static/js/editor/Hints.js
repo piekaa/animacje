@@ -24,11 +24,18 @@ class Hints {
             Hints.currentMenuHints = new MethodHints([
                 "move",
                 "moveSmooth",
-                "moveWiggle"
+                "moveWiggle",
+                "moveWait",
+                "moveSmoothWait",
+                "moveWiggleWait",
+                "setPosition",
+                "setRotation",
+                "setScale",
             ], Hints.destroyCallback).instance;
         },
         "line": PointHints.lineHints,
         "curve": PointHints.curveHints,
+        "text": PointHints.textHints,
         "customType": PointHints.customTypeHints,
         "call": PointHints.callHints,
         "": () => {
@@ -48,6 +55,10 @@ class Hints {
         {
             context: "curve",
             reg: /.*= *curve *\(.*\)/,
+        },
+        {
+            context: "text",
+            reg: /.*= *text *\(.*\)/,
         },
         {
             context: "type",
@@ -78,7 +89,7 @@ class Hints {
 
     static setDefinitions(definitions) {
         Hints.definitions = definitions.map(def => def.name);
-        Hints.definitions.push("square", "line", "curve");
+        Hints.definitions.push(...Object.keys(InitCompiler.primitives));
         Hints.#contextRegexps.push(...definitions.map(def => ({
             context: "customType",
             reg: new RegExp(`.*= *${def.name} *\\(.*\\)`)

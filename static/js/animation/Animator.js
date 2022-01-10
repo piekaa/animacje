@@ -4,8 +4,10 @@ import SmoothInterpolator from "./SmoothInterpolator.js";
 import WiggleInterpolator from "./WiggleInterpolator.js";
 import Call from "./Call.js";
 import LinearInterpolator from "./LinearInterpolator.js";
-import Show from "./Show.js";
-import Hide from "./Hide.js";
+import PopUp from "./PopUp.js";
+import PopDown from "./PopDown.js";
+import FadeIn from "./FadeIn.js";
+import Zoom from "./Zoom.js";
 
 class Animator {
 
@@ -73,13 +75,50 @@ class Animator {
         this.#addToDoAtFrame(move);
     }
 
+    zoomWait(obj, x, y, time) {
+        this.zoom(obj, x, y, time);
+        this.wait(time);
+    }
+
+    zoom(obj, x, y, time) {
+        this.#zoom(obj, x, y, time, new LinearInterpolator());
+    }
+
+    zoomSmoothWait(obj, x, y, time) {
+        this.zoomSmooth(obj, x, y, time);
+        this.wait(time);
+    }
+
+    zoomSmooth(obj, x, y, time) {
+        this.#zoom(obj, x, y, time, new SmoothInterpolator());
+    }
+
+    zoomWiggleWait(obj, x, y, time) {
+        this.zoomWiggle(obj, x, y, time);
+        this.wait(time);
+    }
+
+    zoomWiggle(obj, x, y, time) {
+        this.#zoom(obj, x, y, time, new WiggleInterpolator());
+    }
+
+    #zoom(obj, x, y, time, interpolator) {
+        this.#initObjectIfNew(obj);
+        const framesDuration = this.#timeToFrames(time);
+        this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
+        const zoom = new Zoom(obj, x, y, framesDuration, interpolator);
+        this.allActions.add(zoom);
+        zoom.start(this.frame);
+        this.#addToDoAtFrame(zoom);
+    }
+
     popupWait(obj, time = "0.5s") {
         this.popup(obj, time);
         this.wait(time);
     }
 
     popup(obj, time = "0.5s") {
-        this.#show(obj, time, new WiggleInterpolator(2.3));
+        this.#popup(obj, time, new WiggleInterpolator(2.3));
     }
 
     popDownWait(obj, time = "0.5s") {
@@ -88,25 +127,61 @@ class Animator {
     }
 
     popDown(obj, time = "0.5s") {
-        this.#hide(obj, time, new SmoothInterpolator());
+        this.#popdown(obj, time, new SmoothInterpolator());
     }
 
-    #show(obj, time, interpolator) {
+    #popup(obj, time, interpolator) {
         this.#initObjectIfNew(obj);
         const framesDuration = this.#timeToFrames(time);
         this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
-        const show = new Show(obj, framesDuration, interpolator);
+        const show = new PopUp(obj, framesDuration, interpolator);
         this.allActions.add(show);
         this.#addToDoAtFrame(show);
     }
 
-    #hide(obj, time, interpolator) {
+    #popdown(obj, time, interpolator) {
         this.#initObjectIfNew(obj);
         const framesDuration = this.#timeToFrames(time);
         this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
-        const hide = new Hide(obj, framesDuration, interpolator);
+        const hide = new PopDown(obj, framesDuration, interpolator);
         this.allActions.add(hide);
         this.#addToDoAtFrame(hide);
+    }
+
+    fadeInWait(obj, time = "1s") {
+        this.#fadeIn(obj, time, new LinearInterpolator())
+        this.wait(time);
+    }
+
+    fadeIn(obj, time = "1s") {
+        this.#fadeIn(obj, time, new LinearInterpolator())
+    }
+
+    #fadeIn(obj, time, interpolator) {
+        this.#initObjectIfNew(obj);
+        const framesDuration = this.#timeToFrames(time);
+        this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
+        const fadeIn = new FadeIn(obj, framesDuration, interpolator);
+        this.allActions.add(fadeIn);
+        this.#addToDoAtFrame(fadeIn);
+    }
+
+    fadeOutWait(obj, time = "1s") {
+        this.#fadeOut(obj, time, new LinearInterpolator())
+        this.wait(time);
+    }
+
+    fadeOut(obj, time = "1s") {
+        this.#fadeOut(obj, time, new LinearInterpolator())
+    }
+
+    #fadeOut(obj, time, interpolator) {
+        this.#initObjectIfNew(obj);
+        const framesDuration = this.#timeToFrames(time);
+        this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
+        const fadeOut = new FadeOut(obj, framesDuration, interpolator);
+        this.allActions.add(fadeOut);
+        this.#addToDoAtFrame(fadeOut);
     }
 
     #initObjectIfNew(obj) {

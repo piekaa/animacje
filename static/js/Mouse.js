@@ -26,7 +26,8 @@ class Mouse {
             event.preventDefault();
             let zoom = event.deltaY > 0 ? 0.99 : 1.01;
             zoom = Math.pow(zoom, Math.abs(event.deltaY));
-            Camera.current.scale = Camera.current.scale.multiply(Matrix2D.Scale(zoom, zoom));
+            const cameraScaleMatrix = Camera.current.scale.multiply(Matrix2D.Scale(zoom, zoom));
+            Camera.current.setScale(cameraScaleMatrix.sx(), cameraScaleMatrix.sy());
         });
 
         canvas.addEventListener("mousedown", (event) => {
@@ -85,8 +86,10 @@ class Mouse {
 
             Mouse.leftDownThisFrame = false;
 
+            const cameraPositionMatrix = Mouse.startCameraPos.multiply(Matrix2D.Translation((Mouse.startRMX - mx) * (1 / Camera.current.scale.sx()), (Mouse.startRMY - my) * (1 / Camera.current.scale.sy())));
+
             if (this.rightDown) {
-                Camera.current.position = Mouse.startCameraPos.multiply(Matrix2D.Translation((Mouse.startRMX - mx) * (1 / Camera.current.scale.sx()), (Mouse.startRMY - my) * (1 / Camera.current.scale.sy())));
+                Camera.current.setPosition(cameraPositionMatrix.x(), cameraPositionMatrix.y());
             }
 
         }, false);

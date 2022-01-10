@@ -16,7 +16,6 @@ class VariableHints extends MenuHints {
         const pos = data.globalPosition;
         HintsGlobals.updateCode(code.slice(0, pos) + value + code.slice(pos));
         HintsGlobals.codeElement.setSelectionRange(pos + value.length, pos + value.length);
-        HintsGlobals.compileFunction();
         HintsGlobals.focusCode();
         this.destroy();
     }

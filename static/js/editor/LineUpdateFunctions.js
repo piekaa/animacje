@@ -1,3 +1,5 @@
+import Regexps from "./Regexps.js";
+
 class LineUpdateFunctions {
 
     static pointsAndWidth(textSoFar, points, width) {
@@ -15,8 +17,13 @@ class LineUpdateFunctions {
     }
 
     static pointAndTime(textSoFar, points) {
-        let args = `(${points[0].position.x()}, ${points[0].position.y()}, "1s")`;
-        return textSoFar.replace(/\(.*\)/, args);
+        let point = `${points[0].position.x()}, ${points[0].position.y()}`;
+        return textSoFar.replace(Regexps.point, point);
+    }
+
+    static textAndPoint(textSoFar, points) {
+        let coordinates = `${points[0].position.x()}, ${points[0].position.y()}`;
+        return textSoFar.replace(Regexps.point, coordinates);
     }
 
 }

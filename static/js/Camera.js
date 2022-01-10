@@ -23,6 +23,16 @@ class Camera extends AnimatedRenderable {
 
         return matrix;
     }
+
+    setPosition(x, y) {
+        super.setPosition(x, y);
+        document.getElementById("cameraPosition").value = `${x.toFixed(2)}, ${y.toFixed(2)}`;
+    }
+
+    setScale(sx, sy) {
+        super.setScale(sx, sy);
+        document.getElementById("cameraScale").value = `${sx.toFixed(2)}, ${sy.toFixed(2)}`;
+    }
 }
 
 export default Camera

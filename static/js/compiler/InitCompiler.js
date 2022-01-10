@@ -4,8 +4,9 @@ import StandardRenderable from "../animation/StandardRenderable.js";
 import Square from "../primitives/Square.js";
 import Camera from "../Camera.js";
 import Curve from "../primitives/Curve.js";
-import Text from "../primitives/Text.js";
+import TextBox from "../primitives/TextBox.js";
 import Dialog from "../primitives/Dialog.js";
+import Text from "../primitives/Text.js";
 
 // todo wykrywanie cyklicznych zależności
 // todo nadpisywanie zmiennych
@@ -16,6 +17,7 @@ class InitCompiler {
         "line": Line,
         "square": Square,
         "curve": Curve,
+        "textBox": TextBox,
         "text": Text,
         "dialog": Dialog
     };
@@ -62,34 +64,18 @@ class InitCompiler {
             return;
         }
 
-        // const l = line.replace(/\s/g, '');
         const l = line;
-        if (l.includes("=")) {
-            const sp = l.split(/[=(,)]/);
-            sp.pop();
-            if (l.includes("()")) {
-                sp.pop();
-            }
-            const varName = sp.shift().replace(/\s/g, '');
-            const type = sp.shift().replace(/\s/g, '');
 
-            const args = InitCompiler.#parseArgs(sp);
-            const obj = InitCompiler.#createObject(type, args, parent, pivot);
+        //todo what if it's inside string
+        if (l.includes("=")) {
+            const [, varName, , type, args] = / *(.*?) *(=) *(.*?) *\((.*)\)/.exec(l);
+            const obj = InitCompiler.#createObject(type, InitCompiler.#parseArgs(args), parent, pivot);
             InitCompiler.#variables[varName] = obj;
             return obj;
         } else {
-            const firstDotIndex = l.indexOf(".");
-            const variableName = l.substring(0, firstDotIndex).replace(/\s/g, '');
-            const sp = l.substring(firstDotIndex + 1, l.length).split(/[(,)]/);
-
-            sp.pop();
-            if (l.includes("()")) {
-                sp.pop();
-            }
-            const functionName = sp.shift().replace(/\s/g, '');
-            const args = InitCompiler.#parseArgs(sp);
+            const [, variableName, , functionName, args] = / *(.*?) *(\.) *(.*?) *\((.*)\)/.exec(l);
             const obj = InitCompiler.#variables[variableName];
-            obj[functionName](...args);
+            obj[functionName](...InitCompiler.#parseArgs(args));
         }
     }
 
@@ -115,7 +101,9 @@ class InitCompiler {
     }
 
     static #parseArgs(args) {
-        return args.map(arg => {
+
+        //todo what if , is inside string?
+        return args.split(",").map(arg => {
 
             arg = arg.trim();
 

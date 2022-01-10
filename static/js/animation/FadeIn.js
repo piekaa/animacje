@@ -1,11 +1,14 @@
 import LinearInterpolator from "./LinearInterpolator.js";
 
-class Show {
-
+class FadeIn {
     #currentFrame = 0;
     #totalFrames;
     #obj;
     #interpolator;
+
+    #r
+    #g
+    #b
 
     constructor(obj, frames, interpolator = new LinearInterpolator()) {
         this.#obj = obj;
@@ -23,13 +26,14 @@ class Show {
 
         if (this.#currentFrame === 0) {
             this.#obj.setFrameVisible(true);
+            [this.#r, this.#g, this.#b] = this.#obj.color;
         }
 
         this.#currentFrame++;
         const p = this.#currentFrame / this.#totalFrames;
-        const s = this.#interpolator.interpolate(0, 1, p);
-        this.#obj.setFrameScale(s, s);
+        const a = this.#interpolator.interpolate(0, 1, p);
+        this.#obj.setFrameColor([this.#r, this.#g, this.#b, a]);
     }
 }
 
-export default Show
+export default FadeIn

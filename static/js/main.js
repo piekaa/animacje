@@ -20,6 +20,8 @@ definitionFiles.start(true);
 
 let tab = "animation";
 
+let lastProgressFrame = 0;
+
 PiekoszekEngine.start();
 
 const pivot = new Square(100, 100, 50);
@@ -50,8 +52,13 @@ function compileAnimation() {
             a.completeRemainingFrames();
             progress.min = 0;
             progress.max = a.frame - 1;
-            progress.value = 0;
+            progress.value = Math.min(lastProgressFrame, progress.max);
             animator = a;
+            progress.oninput({
+                target: {
+                    value: Math.min(lastProgressFrame, progress.max)
+                }
+            });
         });
 }
 
@@ -59,12 +66,13 @@ function compileAnimation() {
 function compileDefinition() {
     InitCompiler.compile(definitionFiles.selectedFileCode(), pivot, definitionFiles.getRawData())
         .then(() => {
-            DefinitionPostCompiler.postCompileSteps(pivot);
+            DefinitionPostCompiler.postCompileSteps(pivot, definitionFiles);
         });
 }
 
 progress.oninput = (event) => {
     const frame = event.target.value;
+    lastProgressFrame = frame;
     animator?.setValuesAtFrame(frame);
 }
 

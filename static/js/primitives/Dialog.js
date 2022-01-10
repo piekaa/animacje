@@ -2,7 +2,7 @@ import AnimatedRenderable from "../animation/AnimatedRenderable.js";
 import PiekoszekEngine from "../PiekoszekEngine.js";
 import Line from "./Line.js";
 import Curve from "./Curve.js";
-import Text from "./Text.js";
+import TextBox from "./TextBox.js";
 
 class Dialog extends AnimatedRenderable {
 
@@ -23,7 +23,7 @@ class Dialog extends AnimatedRenderable {
         this.setPivot(250.65, 227.20)
 
 
-        const t = new Text(300, 478.87, text, 700, 230);
+        const t = new TextBox(300, 478.87, text, 700, 230);
         PiekoszekEngine.addAsChild(this, t);
 
     }
