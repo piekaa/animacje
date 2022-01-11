@@ -8,6 +8,10 @@ import PopUp from "./PopUp.js";
 import PopDown from "./PopDown.js";
 import FadeIn from "./FadeIn.js";
 import Zoom from "./Zoom.js";
+import FadeOut from "./FadeOut.js";
+import Color from "./Color.js";
+
+// todo implement start(frame) in all animations
 
 class Animator {
 
@@ -162,6 +166,7 @@ class Animator {
         const framesDuration = this.#timeToFrames(time);
         this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
         const fadeIn = new FadeIn(obj, framesDuration, interpolator);
+        fadeIn.start(this.frame);
         this.allActions.add(fadeIn);
         this.#addToDoAtFrame(fadeIn);
     }
@@ -180,8 +185,28 @@ class Animator {
         const framesDuration = this.#timeToFrames(time);
         this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
         const fadeOut = new FadeOut(obj, framesDuration, interpolator);
+        fadeOut.start(this.frame);
         this.allActions.add(fadeOut);
         this.#addToDoAtFrame(fadeOut);
+    }
+
+    colorWait(obj, r, g, b, a, time = "1s") {
+        this.#color(obj, r, g, b, a, time, new LinearInterpolator())
+        this.wait(time);
+    }
+
+    color(obj, r, g, b, a, time = "1s") {
+        this.#color(obj, r, g, b, a, time, new LinearInterpolator())
+    }
+
+    #color(obj, r, g, b, a, time, interpolator) {
+        this.#initObjectIfNew(obj);
+        const framesDuration = this.#timeToFrames(time);
+        this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
+        const color = new Color(obj, r, g, b, a, framesDuration, interpolator);
+        color.start(this.frame);
+        this.allActions.add(color);
+        this.#addToDoAtFrame(color);
     }
 
     #initObjectIfNew(obj) {

@@ -10,6 +10,18 @@ class MethodAutofillFunctions {
         setPosition: MethodAutofillFunctions.point,
         setRotation: MethodAutofillFunctions.rotation,
         setScale: MethodAutofillFunctions.scale,
+        hide: MethodAutofillFunctions.noArgsCall,
+        show: MethodAutofillFunctions.noArgsCall,
+        popUp: MethodAutofillFunctions.noArgsCall,
+        popUpWait: MethodAutofillFunctions.noArgsCall,
+        popDown: MethodAutofillFunctions.noArgsCall,
+        popDownWait: MethodAutofillFunctions.noArgsCall,
+        fadeIn: MethodAutofillFunctions.noArgsCall,
+        fadeInWait: MethodAutofillFunctions.noArgsCall,
+        fadeOut: MethodAutofillFunctions.noArgsCall,
+        fadeOutWait: MethodAutofillFunctions.noArgsCall,
+        color: MethodAutofillFunctions.color,
+        colorWait: MethodAutofillFunctions.color,
     }
 
     static pointAndTime(method, point) {
@@ -26,6 +38,14 @@ class MethodAutofillFunctions {
 
     static scale(method) {
         return `${method}(2,2)`;
+    }
+
+    static noArgsCall(method) {
+        return `${method}()`
+    }
+
+    static color(method) {
+        return `${method}(1,1,1,1, "1s")`
     }
 }
 

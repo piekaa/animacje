@@ -12,7 +12,9 @@ class MethodHints extends MenuHints {
     addItem(type) {
         name = "";
         for (let i = 0; i < type.length; i++) {
+            console.log(name)
             this.items[name] ||= new Set();
+            console.log(this.items[name])
             this.items[name].add(type);
             name += type[i];
         }

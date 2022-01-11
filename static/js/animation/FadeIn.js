@@ -16,7 +16,9 @@ class FadeIn {
         this.#interpolator = interpolator;
     }
 
-    start() {
+    start(frame) {
+        frame = Math.max(frame - 1, 0);
+        [this.#r, this.#g, this.#b] = this.#obj.getValuesAtFrame(frame).color;
     }
 
     updateFrame() {
@@ -26,7 +28,6 @@ class FadeIn {
 
         if (this.#currentFrame === 0) {
             this.#obj.setFrameVisible(true);
-            [this.#r, this.#g, this.#b] = this.#obj.color;
         }
 
         this.#currentFrame++;

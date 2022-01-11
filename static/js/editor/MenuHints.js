@@ -1,11 +1,12 @@
 import CodeAnalysis from "./CodeAnalysis.js";
+import HintsGlobals from "./HintsGlobals.js";
 
 class MenuHints {
 
     hints;
     selectedHint = 0;
     currentHintsLength = 0;
-    items = []
+    items = {}
     inHintMenu = false;
     instance
 
@@ -21,7 +22,7 @@ class MenuHints {
         const typeStart = text.trim();
         this.buildHintMenu(Array.from(this.items[typeStart] || []));
         this.hints.style.left = `${lineData.position * 8 + 10}px`;
-        this.hints.style.top = `${lineData.line * 15 + 2}px`;
+        this.hints.style.top = `${lineData.line * 15 + 2 - HintsGlobals.codeElement.scrollTop}px`;
     }
 
     cutLine(text) {

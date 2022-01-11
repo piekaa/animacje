@@ -77,7 +77,7 @@ progress.oninput = (event) => {
 }
 
 document.getElementById("play").onclick = () => {
-    let frame = 0;
+    let frame = lastProgressFrame < progress.max ? lastProgressFrame : 0;
 
     // document.getElementById("canvas").requestFullscreen();
 

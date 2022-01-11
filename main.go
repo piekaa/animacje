@@ -18,3 +18,5 @@ func main() {
 // todo definicje w podpowiedziach od razu, a nie po restarcie
 
 // todo variable hints i type hints do jednego, potem dodać methodHints
+
+// todo wycieki pamięci?

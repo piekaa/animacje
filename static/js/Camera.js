@@ -24,14 +24,27 @@ class Camera extends AnimatedRenderable {
         return matrix;
     }
 
-    setPosition(x, y) {
+    setPosition(x, y, ignoreLock = false) {
+        if (document.getElementById("lockCamera").checked && !ignoreLock) {
+            return;
+        }
         super.setPosition(x, y);
         document.getElementById("cameraPosition").value = `${x.toFixed(2)}, ${y.toFixed(2)}`;
     }
 
-    setScale(sx, sy) {
+    setScale(sx, sy, ignoreLock = false) {
+        if (document.getElementById("lockCamera").checked && !ignoreLock) {
+            return;
+        }
         super.setScale(sx, sy);
         document.getElementById("cameraScale").value = `${sx.toFixed(2)}, ${sy.toFixed(2)}`;
+    }
+
+    setValuesAtFrame(frame) {
+        if (document.getElementById("lockCamera").checked) {
+            return;
+        }
+        super.setValuesAtFrame(frame);
     }
 }
 

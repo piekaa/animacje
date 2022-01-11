@@ -28,6 +28,11 @@ class Text extends AnimatedRenderable {
 
     }
 
+    setColor(r = 1, g = 1, b = 1, a = 1) {
+        super.setColor(r, g, b, a);
+        this.letters.forEach(l => l.setColor(r,g,b,a));
+    }
+
     isReady() {
         return false;
     }
