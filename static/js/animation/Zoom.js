@@ -23,7 +23,6 @@ class Zoom {
         frame = Math.max(frame - 1, 0);
         this.#startSX = this.#obj.getValuesAtFrame(frame).scale.sx();
         this.#startSY = this.#obj.getValuesAtFrame(frame).scale.sy();
-        console.log(`${this.#startSX}, ${this.#startSY}`)
     }
 
     updateFrame() {

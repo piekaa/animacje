@@ -77,8 +77,10 @@ progress.oninput = (event) => {
 }
 
 document.getElementById("play").onclick = () => {
-    let frame = lastProgressFrame < progress.max ? lastProgressFrame : 0;
-
+    console.log(lastProgressFrame);
+    console.log(progress.max);
+    let frame = parseInt(lastProgressFrame) < parseInt(progress.max) ? lastProgressFrame : 0;
+    console.log(frame);
     // document.getElementById("canvas").requestFullscreen();
 
     PiekoszekEngine.addBehaviour(() => {

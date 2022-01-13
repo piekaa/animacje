@@ -6,7 +6,7 @@ class Files {
     #selected = 0;
     #filesElement;
     #storage;
-    #withInitFile;
+    #animation;
 
     #stopped = false;
 
@@ -15,9 +15,9 @@ class Files {
     #onFileSelect;
     #onLoad;
 
-    constructor(withInitFile = true, storage = new FileStorage(), callbacks = {}) {
+    constructor(animation = true, storage = new FileStorage(), callbacks = {}) {
         this.#storage = storage;
-        this.#withInitFile = withInitFile;
+        this.#animation = animation;
         this.#onFileSelect = callbacks.onFileSelect || (() => {
         });
         this.#onLoad = callbacks.onLoad || (() => {
@@ -39,7 +39,7 @@ class Files {
                 this.#filesElement.innerHTML = "";
                 for (let i = 0; i < files.length; i++) {
                     const f = files[i];
-                    this.#createAndAppendFileElement(f.name, f.content, i !== 0 || !this.#withInitFile);
+                    this.#createAndAppendFileElement(f.name, f.content, f.init);
                 }
 
                 document.getElementById("newFile").onclick = () => {
@@ -70,20 +70,25 @@ class Files {
     }
 
     #newFile() {
+        if (this.#animation) {
+            this.#createAndAppendFileElement("new init file", "", true)
+        }
         this.#createAndAppendFileElement("new file")
     }
 
-    #createAndAppendFileElement(name, content = "", editable = true) {
+    #createAndAppendFileElement(name, content = "", init = false) {
         const fileElement = document.createElement("div");
         fileElement.classList.add("file");
-        if (editable) {
-            fileElement.contentEditable = "true";
-        }
+
+        fileElement.contentEditable = "true";
+
         fileElement.innerHTML = name;
+
         const id = this.#allFiles.length;
+
         fileElement.id = `${id}`;
 
-        if (!editable) {
+        if (init) {
             fileElement.classList.add("protected");
         }
 
@@ -99,7 +104,7 @@ class Files {
             }
         });
 
-        this.#allFiles.push(new File(name, content, fileElement));
+        this.#allFiles.push(new File(name, content, fileElement, init));
         this.#filesElement.appendChild(fileElement);
     }
 
@@ -140,7 +145,10 @@ class Files {
     }
 
     getInitCode() {
-        return this.#allFiles[0].content;
+        return this.#allFiles
+            .filter(f => f.init)
+            .map(f => f.content)
+            .join("\n");
     }
 
     getAnimationCode() {
@@ -161,17 +169,20 @@ class File {
     name
     content
     element
+    init
 
-    constructor(name, content, element) {
+    constructor(name, content, element, init = false) {
         this.name = name;
         this.content = content;
         this.element = element;
+        this.init = init;
     }
 
     serialize() {
         return {
             name: this.name,
-            content: this.content
+            content: this.content,
+            init: this.init
         }
     }
 }

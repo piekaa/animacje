@@ -13,6 +13,15 @@ class FileStorage {
     }
 
     save(files) {
+
+        fetch(`/backup/${this.#project}`, {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(files)
+        });
+
         localStorage.setItem(this.#project, JSON.stringify(files));
     }
 }

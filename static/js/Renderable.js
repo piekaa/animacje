@@ -41,6 +41,8 @@ class Renderable {
     useTexcoord = false;
     triangleStrip = true;
 
+    updateExtensions = [];
+
     constructor(fragmentShaderPath = "/js/shader/untexturedFragment.shader", vertexShaderPath = "/js/shader/untexturedVertex.shader") {
         this.#id = Renderable.#nextId++;
 
@@ -99,7 +101,7 @@ class Renderable {
     }
 
     update() {
-
+        this.updateExtensions.forEach(u => u());
     }
 
     updateTransformation(parentTransform = Matrix2D.Identity(), parentPivot = Matrix2D.Translation(0, 0)) {

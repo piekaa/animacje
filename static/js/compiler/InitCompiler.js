@@ -75,7 +75,13 @@ class InitCompiler {
         } else {
             const [, variableName, , functionName, args] = / *(.*?) *(\.) *(.*?) *\((.*)\)/.exec(l);
             const obj = InitCompiler.#variables[variableName];
-            obj[functionName](...InitCompiler.#parseArgs(args));
+            try {
+                obj[functionName](...InitCompiler.#parseArgs(args));
+            } catch (e) {
+                console.log(l);
+                console.error(e);
+            }
+
         }
     }
 

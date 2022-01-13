@@ -1,12 +1,13 @@
 import Vector from "../Vector.js";
 import Mouse from "../Mouse.js";
+import Camera from "../Camera.js";
 
 class DragAndDropExtension {
 
     static updateExtension(obj, radius, onDrop = () => {
     }) {
         const dnd = new DragAngDrop(obj, radius, onDrop);
-        obj.update = dnd.update.bind(dnd);
+        obj.updateExtensions.push(dnd.update.bind(dnd));
     }
 
 }
@@ -27,6 +28,7 @@ class DragAngDrop {
     }
 
     update() {
+
         if (!Mouse.leftDown) {
 
             if (this.dragged) {
@@ -39,7 +41,7 @@ class DragAngDrop {
         //todo world position??
         if (Vector.FromMatrix(this.obj.position)
                 .direction(new Vector(Mouse.wmx, Mouse.wmy))
-                .length() <= this.radius
+                .length() <= this.radius * (1/Camera.current.scale.sx())
             && Mouse.leftDownThisFrame) {
             this.dragged = true;
         }

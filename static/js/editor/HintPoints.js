@@ -1,7 +1,7 @@
-import Square from "../primitives/Square.js";
 import PiekoszekEngine from "../PiekoszekEngine.js";
 import DragAndDropExtension from "../extensions/DragAndDropExtension.js";
 import HintsGlobals from "./HintsGlobals.js";
+import HintPoint from "./HintPoint.js";
 
 class HintPoints {
 
@@ -21,7 +21,7 @@ class HintPoints {
             .map(arg => parseFloat(arg));
 
         for (let i = 0; i < numberOfPoints; i++) {
-            this.points.push(new Square(args[i * 2 + skipArgs], args[i * 2 + 1 + skipArgs], 30));
+            this.points.push(new HintPoint(args[i * 2 + skipArgs], args[i * 2 + 1 + skipArgs], 50));
         }
         this.width = args[numberOfPoints * 2] || 1;
 

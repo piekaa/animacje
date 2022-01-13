@@ -24,14 +24,11 @@ class Letter extends TexturedRenderable {
             Letter.#fontCanvas.width = 500;
             Letter.#fontCanvas.height = 500;
         }
-        this.#loadTexture(char)
+        this.loadTexture(char)
     }
 
-    getChar() {
-        return this.#char;
-    }
+    loadTexture(char) {
 
-    #loadTexture(char) {
         let fontSize = this.height;
 
         if (Letter.loadedChars[char]) {
@@ -42,6 +39,7 @@ class Letter extends TexturedRenderable {
             this.visible = true;
             return;
         }
+
         const context = Letter.#fontCanvas.getContext("2d");
 
         context.clearRect(0, 0, Letter.#fontCanvas.width, Letter.#fontCanvas.height);
@@ -67,6 +65,9 @@ class Letter extends TexturedRenderable {
             });
     }
 
+    getChar() {
+        return this.#char;
+    }
 }
 
 export default Letter
