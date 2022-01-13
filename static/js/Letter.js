@@ -24,10 +24,11 @@ class Letter extends TexturedRenderable {
             Letter.#fontCanvas.width = 500;
             Letter.#fontCanvas.height = 500;
         }
-        this.loadTexture(char)
+        this.#loadTexture(char)
     }
 
-    loadTexture(char) {
+    //todo change to public to fix
+    #loadTexture(char) {
 
         let fontSize = this.height;
 
