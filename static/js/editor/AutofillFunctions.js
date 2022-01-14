@@ -11,34 +11,29 @@ class AutofillFunctions {
         "method": AutofillFunctions.#method
     }
 
-    static #line(typeSoFar) {
+    static #line() {
         const tp = AutofillFunctions.#translatedPoint;
-        const autofill = `line(${tp(100, 100)}, ${tp(800, 800)}, 10)`;
-        return AutofillFunctions.#cutTypeSoFar(typeSoFar, autofill);
+        return `line(${tp(100, 100)}, ${tp(800, 800)}, 10)`;
     }
 
-    static #text(typeSoFar) {
+    static #text() {
         const tp = AutofillFunctions.#translatedPoint;
-        const autofill = `text("abc", ${tp(100, 100)})`;
-        return AutofillFunctions.#cutTypeSoFar(typeSoFar, autofill);
+        return `text("abc", ${tp(100, 100)})`;
     }
 
-    static #curve(typeSoFar) {
+    static #curve() {
         const tp = AutofillFunctions.#translatedPoint;
-        const autofill = `curve(${tp(100, 100)}, ${tp(600, 200)}, ${tp(800, 800)}, 10)`;
-        return AutofillFunctions.#cutTypeSoFar(typeSoFar, autofill);
+        return `curve(${tp(100, 100)}, ${tp(600, 200)}, ${tp(800, 800)}, 10)`;
     }
 
-    static #customType(typeSoFar, type) {
+    static #customType(type) {
         const tp = AutofillFunctions.#translatedPoint;
-        const autofill = `${type}(${tp(400, 400)})`;
-        return AutofillFunctions.#cutTypeSoFar(typeSoFar, autofill);
+        return `${type}(${tp(400, 400)})`;
     }
 
-    static #method(typeSoFar = "", method) {
+    static #method(method) {
         const tp = AutofillFunctions.#translatedPoint;
-        const autofill = MethodAutofillFunctions.functions[method](method, tp(400,400));
-        return AutofillFunctions.#cutTypeSoFar(typeSoFar.split(".")[1], autofill);
+        return MethodAutofillFunctions.functions[method](method, tp(400, 400));
     }
 
     static #translatedPoint(x, y) {
@@ -46,11 +41,6 @@ class AutofillFunctions {
         const ty = Camera.current.position.y();
         return `${parseFloat(x + tx).toFixed(2)}, ${parseFloat(y + ty).toFixed(2)}`;
     }
-
-    static #cutTypeSoFar(typeSoFar, fullText) {
-        return fullText.slice(typeSoFar.length);
-    }
-
 }
 
 export default AutofillFunctions

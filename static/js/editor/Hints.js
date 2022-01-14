@@ -116,7 +116,9 @@ class Hints {
     }
 
     static #update(event) {
-        if (event.key === "Escape") {
+        if (event.key === "Escape"
+            || event.inputType === "insertLineBreak"
+            || event.inputType === "deleteContentBackward") {
             return;
         }
 

@@ -1,7 +1,6 @@
 import MenuHints from "./MenuHints.js";
 import CodeAnalysis from "./CodeAnalysis.js";
 import AutofillFunctions from "./AutofillFunctions.js";
-import HintsGlobals from "./HintsGlobals.js";
 
 class MethodHints extends MenuHints {
 
@@ -23,17 +22,10 @@ class MethodHints extends MenuHints {
     }
 
     applyHint() {
-        this.hints.style.display = "none";
         const data = CodeAnalysis.inputContextData();
         const method = document.getElementById(`hint${this.selectedHint}`).innerText;
-        const value = AutofillFunctions.functions["method"](data.textSoFar, method);
-        const code = HintsGlobals.codeElement.value;
-        const pos = data.globalPosition;
-        HintsGlobals.updateCode(code.slice(0, pos) + value + code.slice(pos));
-        HintsGlobals.codeElement.setSelectionRange(pos + value.length, pos + value.length);
-        HintsGlobals.compileFunction();
-        HintsGlobals.focusCode();
-        this.destroy();
+        const value = AutofillFunctions.functions["method"](method);
+        this.updateCode(`${data.textSoFar.split(".")[0]}.${value}`, data);
     }
 
 }
