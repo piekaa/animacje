@@ -3,6 +3,7 @@ import GL from "./GL.js";
 
 class TexturedRenderable extends Renderable {
 
+    //todo make use
     static textures = [];
 
     texture;

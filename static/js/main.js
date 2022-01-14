@@ -22,6 +22,8 @@ let tab = "animation";
 
 let lastProgressFrame = 0;
 
+let playBehaviourId;
+
 PiekoszekEngine.start();
 
 const pivot = new Square(100, 100, 50);
@@ -77,13 +79,11 @@ progress.oninput = (event) => {
 }
 
 document.getElementById("play").onclick = () => {
-    console.log(lastProgressFrame);
-    console.log(progress.max);
     let frame = parseInt(lastProgressFrame) < parseInt(progress.max) ? lastProgressFrame : 0;
-    console.log(frame);
     // document.getElementById("canvas").requestFullscreen();
 
-    PiekoszekEngine.addBehaviour(() => {
+    pause();
+    playBehaviourId = PiekoszekEngine.addBehaviour(() => {
         if (frame <= progress.max) {
             progress.value = frame;
             progress.oninput({
@@ -95,6 +95,14 @@ document.getElementById("play").onclick = () => {
         frame++;
     });
 };
+
+document.getElementById("pause").onclick = () => {
+    pause();
+}
+
+function pause() {
+    PiekoszekEngine.removeBehaviour(playBehaviourId);
+}
 
 document.getElementById("animationTab").onclick = (event) => {
     event.target.classList.add("selectedTab");

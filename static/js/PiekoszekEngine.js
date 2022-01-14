@@ -10,25 +10,25 @@ class PiekoszekEngine {
     static width = 1920;
     static height = 1080;
 
-    static #rootRenderable;
+    static rootRenderable;
 
     //todo think of way to remove behaviours
-    static #behaviours = [];
-    static #behavioursAfterTransformation = [];
+    static behaviours = [];
+    static behavioursAfterTransformation = [];
 
-    static #renderablesToRemove = []
+    static renderablesToRemove = []
 
-    static #protectedRenderables = [];
+    static protectedRenderables = [];
 
     static canvas;
 
     static root() {
-        return this.#rootRenderable;
+        return this.rootRenderable;
     }
 
     static removeAll() {
         PiekoszekEngine.#createRootRenderableAndCamera();
-        this.#protectedRenderables.forEach(r => {
+        this.protectedRenderables.forEach(r => {
             PiekoszekEngine.add(r);
         })
     }
@@ -43,9 +43,9 @@ class PiekoszekEngine {
     }
 
     static #createRootRenderableAndCamera() {
-        PiekoszekEngine.#rootRenderable = new Renderable();
-        PiekoszekEngine.#rootRenderable.visible = true;
-        PiekoszekEngine.#rootRenderable.isReady = () => {
+        PiekoszekEngine.rootRenderable = new Renderable();
+        PiekoszekEngine.rootRenderable.visible = true;
+        PiekoszekEngine.rootRenderable.isReady = () => {
             return false;
         }
         if (!Camera.current) {
@@ -54,11 +54,11 @@ class PiekoszekEngine {
     }
 
     static add(renderable, isPotected = false) {
-        PiekoszekEngine.#rootRenderable.children.push(renderable);
-        renderable.parent = PiekoszekEngine.#rootRenderable;
+        PiekoszekEngine.rootRenderable.children.push(renderable);
+        renderable.parent = PiekoszekEngine.rootRenderable;
 
         if (isPotected) {
-            PiekoszekEngine.#protectedRenderables.push(renderable);
+            PiekoszekEngine.protectedRenderables.push(renderable);
         }
 
     }
@@ -72,17 +72,25 @@ class PiekoszekEngine {
         renderable.visible = false;
         renderable.update = () => {
         };
-        PiekoszekEngine.#renderablesToRemove.push(renderable);
+        PiekoszekEngine.renderablesToRemove.push(renderable);
     }
 
     //todo remove behaviour
     static addBehaviour(behaviourFunction) {
-        PiekoszekEngine.#behaviours.push(behaviourFunction);
+        return PiekoszekEngine.behaviours.push(behaviourFunction) -1;
     }
 
     //todo remove behaviour
     static addBehaviourAfterTransformation(behaviourFunction) {
-        PiekoszekEngine.#behavioursAfterTransformation.push(behaviourFunction);
+        return PiekoszekEngine.behavioursAfterTransformation.push(behaviourFunction) -1;
+    }
+
+    static removeBehaviour(id) {
+        PiekoszekEngine.behaviours[id] = undefined;
+    }
+
+    static BehaviourAfterTransformation(id) {
+        PiekoszekEngine.behavioursAfterTransformation[id] = undefined;
     }
 
     static #update() {
@@ -90,9 +98,9 @@ class PiekoszekEngine {
         let renderables = [];
 
 
-        PiekoszekEngine.#behaviours.forEach(b => b());
+        PiekoszekEngine.behaviours.forEach(b => b?.());
 
-        queue.push(PiekoszekEngine.#rootRenderable);
+        queue.push(PiekoszekEngine.rootRenderable);
 
 
         while (queue.length > 0) {
@@ -106,7 +114,7 @@ class PiekoszekEngine {
         }
         renderables.sort((a, b) => a.zIndex - b.zIndex);
 
-        PiekoszekEngine.#behavioursAfterTransformation.forEach(b => b());
+        PiekoszekEngine.behavioursAfterTransformation.forEach(b => b?.());
 
         GL.clearToColor();
 
@@ -118,10 +126,10 @@ class PiekoszekEngine {
         const view = screen.multiply(Camera.current.matrix(rect));
         renderables.forEach(r => r.render(view.float32array()));
 
-        PiekoszekEngine.#renderablesToRemove.forEach(toRemove => {
+        PiekoszekEngine.renderablesToRemove.forEach(toRemove => {
             toRemove.parent.children = toRemove.parent.children.filter(r => r.getId() !== toRemove.getId());
         });
-        PiekoszekEngine.#renderablesToRemove = [];
+        PiekoszekEngine.renderablesToRemove = [];
     }
 }
 

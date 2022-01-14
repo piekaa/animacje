@@ -17,8 +17,8 @@ class AnimationCompiler {
             this.#variables["camera"] = Camera.current;
             AnimationCompiler.#compile(code);
             resolve(this.#variables["a"]);
-            console.log(`${window.performance.memory.usedJSHeapSize}/${window.performance.memory.totalJSHeapSize}`)
-            console.log(`${window.performance.memory.usedJSHeapSize/window.performance.memory.totalJSHeapSize}`)
+            // console.log(`${window.performance.memory.usedJSHeapSize}/${window.performance.memory.totalJSHeapSize}`)
+            // console.log(`${window.performance.memory.usedJSHeapSize/window.performance.memory.totalJSHeapSize}`)
         });
     }
 

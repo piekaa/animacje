@@ -86,7 +86,7 @@ class Mouse {
 
             Mouse.leftDownThisFrame = false;
 
-            const cameraPositionMatrix = Mouse.startCameraPos.multiply(Matrix2D.Translation((Mouse.startRMX - mx) * (1 / Camera.current.scale.sx()), (Mouse.startRMY - my) * (1 / Camera.current.scale.sy())));
+            const cameraPositionMatrix = Mouse.startCameraPos?.multiply(Matrix2D.Translation((Mouse.startRMX - mx) * (1 / Camera.current.scale.sx()), (Mouse.startRMY - my) * (1 / Camera.current.scale.sy())));
 
             if (this.rightDown) {
                 Camera.current.setPosition(cameraPositionMatrix.x(), cameraPositionMatrix.y(), true);

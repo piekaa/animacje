@@ -3,66 +3,67 @@ import Gl from "./GL.js";
 
 class Letter extends TexturedRenderable {
 
-    static #canvas;
-    static #fontCanvas;
-
-    static loadedChars = [];
+    static charPromises = [];
 
     #char;
 
     width = 0;
     height = 500;
 
+    loaded = false;
+
     constructor(char) {
         super(undefined, "/js/shader/font/fragment.shader");
-
         this.#char = char;
-
-        if (!Letter.#canvas) {
-            Letter.#canvas = document.getElementById("canvas");
-            Letter.#fontCanvas = document.createElement("canvas");
-            Letter.#fontCanvas.width = 500;
-            Letter.#fontCanvas.height = 500;
-        }
         this.loadTexture(char)
     }
 
     loadTexture(char) {
-
         let fontSize = this.height;
 
-        if (Letter.loadedChars[char]) {
-            this.texture = Letter.loadedChars[char].texture;
-            this.vertexData = Gl.cloneVertexData(Letter.loadedChars[char].vertexData);
-            this.width = Letter.loadedChars[char].width;
-            this.setPivot(this.width / 2, fontSize / 2);
-            this.visible = true;
+        if (Letter.charPromises[char]) {
+            Letter.charPromises[char].then(charData => {
+                this.texture = charData.texture;
+                this.vertexData = Gl.cloneVertexData(charData.vertexData);
+                this.width = charData.width;
+                this.setPivot(this.width / 2, fontSize / 2);
+                this.visible = true;
+                this.loaded = true;
+            });
             return;
         }
 
-        const context = Letter.#fontCanvas.getContext("2d");
+        Letter.charPromises[char] = new Promise(resolve => {
 
-        context.clearRect(0, 0, Letter.#fontCanvas.width, Letter.#fontCanvas.height);
-        context.rect(0, 0, Letter.#fontCanvas.width, Letter.#fontCanvas.height);
-        context.fillStyle = "#F00";
-        context.fill();
+            const fontCanvas = document.createElement("canvas");
+            fontCanvas.width = 500;
+            fontCanvas.height = 500;
 
-        context.font = `${fontSize}px monospace`;
-        context.textBaseline = "middle";
-        context.fillStyle = "#0F0";
-        context.fillText(`${char}`, 0, Letter.#fontCanvas.height / 2);
-        this.width = context.measureText(`${char}`).width;
+            const context = fontCanvas.getContext("2d");
 
-        this.loadImage(Letter.#fontCanvas.toDataURL("image/png"),
-            () => {
-                Letter.loadedChars[char] = {
-                    texture: this.texture,
-                    vertexData: this.vertexData,
-                    width: this.width
-                };
-                this.setPivot(this.width / 2, fontSize / 2);
-                this.visible = true;
-            });
+            context.clearRect(0, 0, fontCanvas.width, fontCanvas.height);
+            context.rect(0, 0, fontCanvas.width, fontCanvas.height);
+            context.fillStyle = "#F00";
+            context.fill();
+
+            context.font = `${fontSize}px monospace`;
+            context.textBaseline = "middle";
+            context.fillStyle = "#0F0";
+            context.fillText(`${char}`, 0, fontCanvas.height / 2);
+            this.width = context.measureText(`${char}`).width;
+
+            this.loadImage(fontCanvas.toDataURL("image/png"),
+                () => {
+                    this.setPivot(this.width / 2, fontSize / 2);
+                    this.visible = true;
+                    this.loaded = true;
+                    resolve({
+                        texture: this.texture,
+                        vertexData: this.vertexData,
+                        width: this.width
+                    });
+                });
+        });
     }
 
     getChar() {
