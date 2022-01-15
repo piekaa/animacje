@@ -6,7 +6,7 @@ import TextBox from "./TextBox.js";
 
 class Dialog extends AnimatedRenderable {
 
-    constructor(x, y, text) {
+    constructor(text, x, y) {
         super();
 
         this.setPosition(x, y);
@@ -20,10 +20,11 @@ class Dialog extends AnimatedRenderable {
         PiekoszekEngine.addAsChild(this, new Line(983.57, 677.74, 314.12, 677.74, 10));
         PiekoszekEngine.addAsChild(this, new Line(259.56, 319.92, 264.12, 577.74, 10));
         PiekoszekEngine.addAsChild(this, new Curve(264.12, 577.74, 259.21, 659.19, 314.12, 677.74, 10));
-        this.setPivot(250.65, 227.20)
+
+        this.setPivot(110.65, 110.20)
 
 
-        const t = new TextBox(300, 478.87, text, 700, 230);
+        const t = new TextBox(300, 478.87, text, 660, 230);
         PiekoszekEngine.addAsChild(this, t);
 
     }

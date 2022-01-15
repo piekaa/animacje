@@ -2,6 +2,8 @@ import PiekoszekEngine from "../PiekoszekEngine.js";
 import DragAndDropExtension from "../extensions/DragAndDropExtension.js";
 import HintsGlobals from "./HintsGlobals.js";
 import HintPoint from "./HintPoint.js";
+import Regexps from "./Regexps.js";
+import Utils from "../utils/Utils.js";
 
 class HintPoints {
 
@@ -16,12 +18,15 @@ class HintPoints {
         this.compileFunction = compileFunction;
         this.data = lineData;
 
-        const args = lineData.textSoFar.split(/[()]/)[1].split(",")
+        const [, , , argsString] = Regexps.fullLine.exec(lineData.textSoFar);
+
+        const args = Utils.splitArgs(argsString)
+            .slice(skipArgs)
             .map(arg => arg.trim())
             .map(arg => parseFloat(arg));
 
         for (let i = 0; i < numberOfPoints; i++) {
-            this.points.push(new HintPoint(args[i * 2 + skipArgs], args[i * 2 + 1 + skipArgs], 50));
+            this.points.push(new HintPoint(args[i * 2], args[i * 2 + 1], 50));
         }
         this.width = args[numberOfPoints * 2] || 1;
 

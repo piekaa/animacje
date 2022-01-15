@@ -7,6 +7,8 @@ import Curve from "../primitives/Curve.js";
 import TextBox from "../primitives/TextBox.js";
 import Dialog from "../primitives/Dialog.js";
 import Text from "../primitives/Text.js";
+import Regexps from "../editor/Regexps.js";
+import Utils from "../utils/Utils.js";
 
 // todo wykrywanie cyklicznych zależności
 // todo nadpisywanie zmiennych
@@ -68,12 +70,12 @@ class InitCompiler {
 
         //todo what if it's inside string
         if (l.includes("=")) {
-            const [, varName, , type, args] = / *(.*?) *(=) *(.*?) *\((.*)\)/.exec(l);
+            const [, varName, type, args] = Regexps.fullLine.exec(l);
             const obj = InitCompiler.#createObject(type, InitCompiler.#parseArgs(args), parent, pivot);
             InitCompiler.#variables[varName] = obj;
             return obj;
         } else {
-            const [, variableName, , functionName, args] = / *(.*?) *(\.) *(.*?) *\((.*)\)/.exec(l);
+            const [, variableName, functionName, args] = Regexps.fullLine.exec(l);
             const obj = InitCompiler.#variables[variableName];
             try {
                 obj[functionName](...InitCompiler.#parseArgs(args));
@@ -86,12 +88,15 @@ class InitCompiler {
     }
 
     static #createObject(type, args, parent, pivot) {
-
         const primitiveType = InitCompiler.primitives[type];
         if (primitiveType) {
             let obj = new primitiveType(...args);
             PiekoszekEngine.addAsChild(parent, obj);
             return obj;
+        }
+
+        for (let i = 2; i < args.length; i++) {
+            InitCompiler.#variables[`_arg${i - 2}`] = args[i];
         }
 
         const definition = InitCompiler.#definitions[type];
@@ -108,8 +113,7 @@ class InitCompiler {
 
     static #parseArgs(args) {
 
-        //todo what if , is inside string?
-        return args.split(",").map(arg => {
+        return Utils.splitArgs(args).map(arg => {
 
             arg = arg.trim();
 

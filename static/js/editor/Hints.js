@@ -48,6 +48,7 @@ class Hints {
         "line": PointHints.lineHints,
         "curve": PointHints.curveHints,
         "text": PointHints.textHints,
+        "dialog": PointHints.dialogHints,
         "customType": PointHints.customTypeHints,
         "call": PointHints.callHints,
         "": () => {
@@ -71,6 +72,10 @@ class Hints {
         {
             context: "text",
             reg: /.*= *text *\(.*\)/,
+        },
+        {
+            context: "dialog",
+            reg: /.*= *dialog *\(.*\)/,
         },
         {
             context: "type",

@@ -26,6 +26,11 @@ class PointHints {
         PointHints.#currentHintPoints = new HintPoints(data, 1, LineUpdateFunctions.textAndPoint, HintsGlobals.compileFunction, 1);
     }
 
+    static dialogHints() {
+        const data = CodeAnalysis.inputContextData();
+        PointHints.#currentHintPoints = new HintPoints(data, 1, LineUpdateFunctions.textAndPoint, HintsGlobals.compileFunction, 1);
+    }
+
     static customTypeHints() {
         const data = CodeAnalysis.inputContextData();
         PointHints.#currentHintPoints = new HintPoints(data, 1, LineUpdateFunctions.point, HintsGlobals.compileFunction);

@@ -116,13 +116,13 @@ class Animator {
         this.#addToDoAtFrame(zoom);
     }
 
-    popupWait(obj, time = "0.5s") {
-        this.popup(obj, time);
+    popUpWait(obj, time = "0.5s") {
+        this.popUp(obj, time);
         this.wait(time);
     }
 
-    popup(obj, time = "0.5s") {
-        this.#popup(obj, time, new WiggleInterpolator(2.3));
+    popUp(obj, time = "0.5s") {
+        this.#popUp(obj, time, new WiggleInterpolator(2.3));
     }
 
     popDownWait(obj, time = "0.5s") {
@@ -134,7 +134,7 @@ class Animator {
         this.#popdown(obj, time, new SmoothInterpolator());
     }
 
-    #popup(obj, time, interpolator) {
+    #popUp(obj, time, interpolator) {
         this.#initObjectIfNew(obj);
         const framesDuration = this.#timeToFrames(time);
         this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);

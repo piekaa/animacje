@@ -42,9 +42,10 @@ class MenuHints {
         }
         this.hints.style.display = "flex";
         let i = 0;
-        this.hints.innerHTML = hints.map(hint => `<div id="hint${i++}" class="hint">${hint}</div>`).join("");
+        const limitedHints = hints.slice(0, 8);
+        this.hints.innerHTML = limitedHints.map(hint => `<div id="hint${i++}" class="hint">${hint}</div>`).join("");
         this.inHintMenu = true;
-        this.currentHintsLength = hints.length;
+        this.currentHintsLength = limitedHints.length;
         this.selectedHint = -1;
         this.selectNextHint();
     }

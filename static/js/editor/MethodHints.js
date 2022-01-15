@@ -8,19 +8,6 @@ class MethodHints extends MenuHints {
         return text.split(".")[1].trim();
     }
 
-    addItem(type) {
-        name = "";
-        for (let i = 0; i < type.length; i++) {
-            console.log(name)
-            this.items[name] ||= new Set();
-            console.log(this.items[name])
-            this.items[name].add(type);
-            name += type[i];
-        }
-        this.items[name] ||= new Set();
-        this.items[name].add(type);
-    }
-
     applyHint() {
         const data = CodeAnalysis.inputContextData();
         const method = document.getElementById(`hint${this.selectedHint}`).innerText;
