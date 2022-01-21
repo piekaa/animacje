@@ -1,6 +1,7 @@
 class Matrix2D {
 
     #v
+    #r
 
     constructor(values) {
         if (values.length !== 9 && values.length !== 3) {
@@ -18,11 +19,13 @@ class Matrix2D {
     }
 
     static Rotation(radian) {
-        return new Matrix2D([
+        const m = new Matrix2D([
             Math.cos(radian), -Math.sin(radian), 0,
             Math.sin(radian), Math.cos(radian), 0,
             0, 0, 1
         ]);
+        m.#r = radian;
+        return m;
     }
 
     static RotationDeg(degree) {
@@ -92,6 +95,10 @@ class Matrix2D {
 
     sy() {
         return this.#v[4];
+    }
+
+    rDeg() {
+        return this.#r / 0.0174532925;
     }
 
     minusXY() {

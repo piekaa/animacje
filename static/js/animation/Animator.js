@@ -10,6 +10,7 @@ import FadeIn from "./FadeIn.js";
 import Zoom from "./Zoom.js";
 import FadeOut from "./FadeOut.js";
 import Color from "./Color.js";
+import Rotate from "./Rotate.js";
 
 // todo implement start(frame) in all animations
 
@@ -28,6 +29,26 @@ class Animator {
         this.frame = 0;
         this.allObjects = new Set();
         this.allActions = new Set();
+    }
+
+    lookSmoothWait(obj, x, y, sx, sy, time) {
+        this.lookSmooth(obj, x, y, sx, sy, time);
+        this.wait(time);
+    }
+
+    lookSmooth(obj, x, y, sx, sy, time) {
+        this.moveSmooth(obj, x, y, time);
+        this.zoom(obj, sx, sy, time); // zoom smooth??
+    }
+
+    lookWait(obj, x, y, sx, sy, time) {
+        this.look(obj, x, y, sx, sy, time);
+        this.wait(time);
+    }
+
+    look(obj, x, y, sx, sy, time) {
+        this.move(obj, x, y, time);
+        this.zoom(obj, sx, sy, time);
     }
 
     wait(time) {
@@ -78,6 +99,44 @@ class Animator {
         move.start(this.frame);
         this.#addToDoAtFrame(move);
     }
+
+    rotateWait(obj, r, time) {
+        this.rotate(obj, r, time);
+        this.wait(time);
+    }
+
+    rotate(obj, r, time) {
+        this.#rotate(obj, r, time, new LinearInterpolator());
+    }
+
+    rotateSmoothWait(obj, r, time) {
+        this.rotateSmooth(obj, r, time);
+        this.wait(time);
+    }
+
+    rotateSmooth(obj, r, time) {
+        this.#rotate(obj, r, time, new SmoothInterpolator());
+    }
+
+    rotateWiggleWait(obj, r, time) {
+        this.rotateWiggle(obj, r, time);
+        this.wait(time);
+    }
+
+    rotateWiggle(obj, r, time) {
+        this.#rotate(obj, r, time, new WiggleInterpolator());
+    }
+
+    #rotate(obj, r, time, interpolator) {
+        this.#initObjectIfNew(obj);
+        const framesDuration = this.#timeToFrames(time);
+        this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
+        const rotate = new Rotate(obj, r, framesDuration, interpolator);
+        this.allActions.add(rotate);
+        rotate.start(this.frame);
+        this.#addToDoAtFrame(rotate);
+    }
+
 
     zoomWait(obj, x, y, time) {
         this.zoom(obj, x, y, time);

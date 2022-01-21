@@ -92,6 +92,10 @@ class Renderable {
         this.color = [r, g, b, a];
     }
 
+    setZIndex(zIndex) {
+        this.zIndex = zIndex;
+    }
+
     isReady() {
         return this.shaderProgram;
     }

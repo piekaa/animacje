@@ -43,11 +43,16 @@ class Hints {
                 "fadeOutWait",
                 "color",
                 "colorWait",
+                "look",
+                "lookWait",
+                "lookSmooth",
+                "lookSmoothWait",
             ], Hints.destroyCallback).instance;
         },
         "line": PointHints.lineHints,
         "curve": PointHints.curveHints,
         "text": PointHints.textHints,
+        "textBox": PointHints.textBoxHints,
         "dialog": PointHints.dialogHints,
         "customType": PointHints.customTypeHints,
         "call": PointHints.callHints,
@@ -72,6 +77,10 @@ class Hints {
         {
             context: "text",
             reg: /.*= *text *\(.*\)/,
+        },
+        {
+            context: "textBox",
+            reg: /.*= *textBox *\(.*\)/,
         },
         {
             context: "dialog",

@@ -38,10 +38,11 @@ class DragAngDrop {
             this.dragged = false;
             return;
         }
+
         //todo world position??
         if (Vector.FromMatrix(this.obj.position)
                 .direction(new Vector(Mouse.wmx, Mouse.wmy))
-                .length() <= this.radius * (1/Camera.current.scale.sx())
+                .length() <= this.radius * (1 / Camera.current.scale.sx())
             && Mouse.leftDownThisFrame) {
             this.dragged = true;
         }

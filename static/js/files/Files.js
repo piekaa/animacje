@@ -152,11 +152,10 @@ class Files {
     }
 
     getAnimationCode() {
-        let code = "";
-        for (let i = 1; i < this.#allFiles.length; i++) {
-            code += this.#allFiles[i].content + "\n";
-        }
-        return code;
+        return this.#allFiles
+            .map(f => f.content)
+            .filter(c => !c.startsWith("/////"))
+            .join("\n");
     }
 
     selectedFileCode() {

@@ -1,3 +1,5 @@
+import Camera from "../Camera.js";
+
 class MethodAutofillFunctions {
 
     static functions = {
@@ -22,6 +24,10 @@ class MethodAutofillFunctions {
         fadeOutWait: MethodAutofillFunctions.noArgsCall,
         color: MethodAutofillFunctions.color,
         colorWait: MethodAutofillFunctions.color,
+        look: MethodAutofillFunctions.look,
+        lookWait: MethodAutofillFunctions.look,
+        lookSmooth: MethodAutofillFunctions.look,
+        lookSmoothWait: MethodAutofillFunctions.look,
     }
 
     static pointAndTime(method, point) {
@@ -46,6 +52,16 @@ class MethodAutofillFunctions {
 
     static color(method) {
         return `${method}(1,1,1,1, "1s")`
+    }
+
+    static look(method) {
+        const x = Camera.current.position.x().toFixed(2);
+        const y = Camera.current.position.y().toFixed(2);
+
+        const sx = Camera.current.scale.sx().toFixed(2);
+        const sy = Camera.current.scale.sy().toFixed(2);
+
+        return `${method}(${x}, ${y}, ${sx}, ${sy}, "1s")`;
     }
 }
 

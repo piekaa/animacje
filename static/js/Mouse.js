@@ -20,7 +20,6 @@ class Mouse {
     static setup(width) {
 
         const canvas = document.getElementById("canvas");
-        const canvasScale = width / canvas.getBoundingClientRect().width
 
         canvas.addEventListener("wheel", event => {
             event.preventDefault();
@@ -31,6 +30,7 @@ class Mouse {
         });
 
         canvas.addEventListener("mousedown", (event) => {
+            const canvasScale = width / canvas.getBoundingClientRect().width
             const mx = event.offsetX * canvasScale;
             const my = (event.target.clientHeight - parseFloat(getComputedStyle(event.target).paddingBottom) - event.offsetY) * canvasScale;
 
@@ -75,6 +75,7 @@ class Mouse {
         }, false);
 
         canvas.addEventListener("mousemove", (event) => {
+            const canvasScale = width / canvas.getBoundingClientRect().width
             const mx = event.offsetX * canvasScale;
             const my = (event.target.clientHeight - parseFloat(getComputedStyle(event.target).paddingBottom) - event.offsetY) * canvasScale;
 

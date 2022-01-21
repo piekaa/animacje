@@ -18,7 +18,7 @@ class HintPoints {
         this.compileFunction = compileFunction;
         this.data = lineData;
 
-        const [, , , argsString] = Regexps.fullLine.exec(lineData.textSoFar);
+        const [, , , , argsString] = Regexps.fullLine.exec(lineData.textSoFar);
 
         const args = Utils.splitArgs(argsString)
             .slice(skipArgs)

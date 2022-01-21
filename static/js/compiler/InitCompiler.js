@@ -66,24 +66,41 @@ class InitCompiler {
             return;
         }
 
-        const l = line;
+        const l = line.trim();
 
-        //todo what if it's inside string
-        if (l.includes("=")) {
-            const [, varName, type, args] = Regexps.fullLine.exec(l);
-            const obj = InitCompiler.#createObject(type, InitCompiler.#parseArgs(args), parent, pivot);
-            InitCompiler.#variables[varName] = obj;
-            return obj;
-        } else {
-            const [, variableName, functionName, args] = Regexps.fullLine.exec(l);
-            const obj = InitCompiler.#variables[variableName];
-            try {
-                obj[functionName](...InitCompiler.#parseArgs(args));
-            } catch (e) {
-                console.log(l);
-                console.error(e);
+        let fullLineResult = Regexps.fullLine.exec(l);
+        if (fullLineResult) {
+            const [, varName, operator, typeOrFunction, args] = fullLineResult;
+            if (operator === "=") {
+                const obj = InitCompiler.#createObject(typeOrFunction, InitCompiler.#parseArgs(args), parent, pivot);
+                InitCompiler.#variables[varName] = obj;
+                return obj;
+            }
+            if (operator === ".") {
+                const obj = InitCompiler.#variables[varName];
+                try {
+                    obj[typeOrFunction](...InitCompiler.#parseArgs(args));
+                } catch (e) {
+                    console.log(l);
+                    console.error(e);
+                }
+            }
+            return;
+        }
+
+        let assignResult = Regexps.assign.exec(l);
+        if (assignResult) {
+            const [, varName, operator, value] = assignResult;
+
+            const parsedValue = this.#parseArg(value)
+
+            if (operator === "=") {
+                InitCompiler.#variables[varName] = parsedValue;
             }
 
+            if (operator === "|=") {
+                InitCompiler.#variables[varName] ||= parsedValue;
+            }
         }
     }
 
@@ -93,6 +110,10 @@ class InitCompiler {
             let obj = new primitiveType(...args);
             PiekoszekEngine.addAsChild(parent, obj);
             return obj;
+        }
+
+        for (let i = 0; i < 10; i++) {
+            InitCompiler.#variables[`_arg${i}`] = undefined
         }
 
         for (let i = 2; i < args.length; i++) {
@@ -112,23 +133,23 @@ class InitCompiler {
     }
 
     static #parseArgs(args) {
+        return Utils.splitArgs(args).map(arg => InitCompiler.#parseArg(arg));
+    }
 
-        return Utils.splitArgs(args).map(arg => {
+    static #parseArg(arg) {
+        arg = arg.trim();
 
-            arg = arg.trim();
+        if (arg.startsWith(`"`)) {
+            return arg.substring(1, arg.length - 1);
+        }
 
-            if (arg.startsWith(`"`)) {
-                return arg.substring(1, arg.length - 1);
-            }
+        arg = arg.replace(/\s/g, '');
 
-            arg = arg.replace(/\s/g, '');
+        if (InitCompiler.#variables[arg]) {
+            return InitCompiler.#variables[arg];
+        }
 
-            if (InitCompiler.#variables[arg]) {
-                return InitCompiler.#variables[arg];
-            }
-
-            return parseFloat(arg);
-        });
+        return parseFloat(arg);
     }
 
     static variables() {

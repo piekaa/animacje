@@ -40,6 +40,11 @@ class Text extends AnimatedRenderable {
         this.letters.forEach(l => l.setColor(r, g, b, a));
     }
 
+    setZIndex(zIndex) {
+        super.setZIndex(zIndex);
+        this.letters.forEach(l => l.setZIndex(zIndex));
+    }
+
     isReady() {
         return false;
     }

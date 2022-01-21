@@ -24,7 +24,7 @@ class Dialog extends AnimatedRenderable {
         this.setPivot(110.65, 110.20)
 
 
-        const t = new TextBox(300, 478.87, text, 660, 230);
+        const t = new TextBox(text, 300, 478.87, 660, 230);
         PiekoszekEngine.addAsChild(this, t);
 
     }

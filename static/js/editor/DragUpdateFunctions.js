@@ -1,6 +1,6 @@
 import Regexps from "./Regexps.js";
 
-class LineUpdateFunctions {
+class DragUpdateFunctions {
 
     static pointsAndWidth(textSoFar, points, width) {
         let coordinates = "(";
@@ -11,9 +11,9 @@ class LineUpdateFunctions {
             `${coordinates}${width})`);
     }
 
-    static point(textSoFar, points) {
-        let coordinates = `(${points[0].position.x()}, ${points[0].position.y()})`;
-        return textSoFar.replace(/\(.*\)/, coordinates);
+    static pointAndCustomArgs(textSoFar, points) {
+        let coordinates = `${points[0].position.x()}, ${points[0].position.y()}`;
+        return textSoFar.replace(Regexps.point, coordinates);
     }
 
     static pointAndTime(textSoFar, points) {
@@ -26,6 +26,11 @@ class LineUpdateFunctions {
         return textSoFar.replace(Regexps.point, coordinates);
     }
 
+    static textAndPointWidthHeight(textSoFar, points) {
+        let coordinates = `${points[0].position.x()}, ${points[0].position.y()}`;
+        return textSoFar.replace(Regexps.point, coordinates);
+    }
+
 }
 
-export default LineUpdateFunctions
+export default DragUpdateFunctions

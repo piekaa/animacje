@@ -7,7 +7,7 @@ class TextBox extends AnimatedRenderable {
 
     allLetters = []
 
-    constructor(x, y, text, maxWidth, maxHeight) {
+    constructor(text, x, y, maxWidth, maxHeight) {
         super();
 
         let words = []
@@ -130,6 +130,11 @@ class TextBox extends AnimatedRenderable {
             l.setPosition(sx + x, sy)
             x += l.width / 2 * scale;
         });
+    }
+
+    setColor(r = 1, g = 1, b = 1, a = 1) {
+        super.setColor(r, g, b, a);
+        this.allLetters.forEach(l => l.setColor(r, g, b, a));
     }
 
     isReady() {
