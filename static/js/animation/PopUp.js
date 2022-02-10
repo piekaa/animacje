@@ -14,7 +14,9 @@ class PopUp {
         this.#interpolator = interpolator;
     }
 
-    start() {
+    start(frame) {
+        frame = Math.max(frame-1, 0);
+        this.#targetScale = this.#obj.getValuesAtFrame(frame).scale.sx();
     }
 
     updateFrame() {
@@ -24,7 +26,6 @@ class PopUp {
 
         if (this.#currentFrame === 0) {
             this.#obj.setFrameVisible(true);
-            this.#targetScale = this.#obj.scale.sx();
         }
 
         this.#currentFrame++;

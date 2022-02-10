@@ -30,7 +30,6 @@ class DragAngDrop {
     update() {
 
         if (!Mouse.leftDown) {
-
             if (this.dragged) {
                 this.onDrop();
             }

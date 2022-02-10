@@ -35,4 +35,4 @@ func Backup(c echo.Context) error {
 
 // todo variable hints i type hints do jednego, potem dodać methodHints
 
-// todo wycieki pamięci?
+// todo line move czy set position źle działa

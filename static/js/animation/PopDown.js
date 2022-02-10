@@ -7,13 +7,17 @@ class PopDown {
     #obj;
     #interpolator;
 
+    #startScale
+
     constructor(obj, frames, interpolator = new LinearInterpolator()) {
         this.#obj = obj;
         this.#totalFrames = frames;
         this.#interpolator = interpolator;
     }
 
-    start() {
+    start(frame) {
+        frame = Math.max(frame-1, 0);
+        this.#startScale = this.#obj.getValuesAtFrame(frame).scale.sx();
     }
 
     updateFrame() {
@@ -22,17 +26,15 @@ class PopDown {
             this.#obj.setFrameVisible(false);
         }
 
+        this.#currentFrame++;
+
         if (this.#currentFrame >= this.#totalFrames) {
             return
         }
 
-        if (this.#currentFrame === 0) {
-            this.#obj.setFrameVisible(true);
-        }
 
-        this.#currentFrame++;
         const p = this.#currentFrame / this.#totalFrames;
-        const s = this.#interpolator.interpolate(1, 0, p);
+        const s = this.#interpolator.interpolate(this.#startScale, 0, p);
         this.#obj.setFrameScale(s, s);
     }
 }

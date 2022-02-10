@@ -47,6 +47,8 @@ class Hints {
                 "lookWait",
                 "lookSmooth",
                 "lookSmoothWait",
+                "zoom",
+                "zoomWait",
             ], Hints.destroyCallback).instance;
         },
         "line": PointHints.lineHints,
@@ -92,7 +94,7 @@ class Hints {
         },
         {
             context: "variable",
-            reg: /^ *[a-zA-Z0-9]*$/
+            reg: /^ *[a-zA-Z0-9]+$/
         },
         {
             context: "method",

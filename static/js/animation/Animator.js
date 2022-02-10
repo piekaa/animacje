@@ -38,7 +38,7 @@ class Animator {
 
     lookSmooth(obj, x, y, sx, sy, time) {
         this.moveSmooth(obj, x, y, time);
-        this.zoom(obj, sx, sy, time); // zoom smooth??
+        this.zoomSmooth(obj, sx, sy, time); // zoom smooth??
     }
 
     lookWait(obj, x, y, sx, sy, time) {
@@ -184,12 +184,12 @@ class Animator {
         this.#popUp(obj, time, new WiggleInterpolator(2.3));
     }
 
-    popDownWait(obj, time = "0.5s") {
+    popDownWait(obj, time = "1s") {
         this.popDown(obj, time);
         this.wait(time);
     }
 
-    popDown(obj, time = "0.5s") {
+    popDown(obj, time = "1s") {
         this.#popdown(obj, time, new SmoothInterpolator());
     }
 
@@ -198,6 +198,7 @@ class Animator {
         const framesDuration = this.#timeToFrames(time);
         this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
         const show = new PopUp(obj, framesDuration, interpolator);
+        show.start(this.frame);
         this.allActions.add(show);
         this.#addToDoAtFrame(show);
     }
@@ -207,6 +208,7 @@ class Animator {
         const framesDuration = this.#timeToFrames(time);
         this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
         const hide = new PopDown(obj, framesDuration, interpolator);
+        hide.start(this.frame);
         this.allActions.add(hide);
         this.#addToDoAtFrame(hide);
     }

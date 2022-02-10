@@ -61,10 +61,15 @@ class AnimatedRenderable extends Renderable {
             return
         }
 
+
         this.framePosition ||= this.valuesAtFrame[frame - 1].position;
         this.frameRotation ||= this.valuesAtFrame[frame - 1].rotation;
         this.frameScale ||= this.valuesAtFrame[frame - 1].scale;
-        this.frameVisible ||= this.valuesAtFrame[frame - 1].visible;
+
+        if( this.frameVisible === undefined) {
+            this.frameVisible = this.valuesAtFrame[frame - 1].visible;
+        }
+
         this.frameColor ||= this.valuesAtFrame[frame - 1].color;
 
         this.valuesAtFrame[frame] = {

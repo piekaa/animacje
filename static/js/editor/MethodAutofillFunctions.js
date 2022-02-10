@@ -28,6 +28,8 @@ class MethodAutofillFunctions {
         lookWait: MethodAutofillFunctions.look,
         lookSmooth: MethodAutofillFunctions.look,
         lookSmoothWait: MethodAutofillFunctions.look,
+        zoom: MethodAutofillFunctions.scaleAndTime,
+        zoomWait: MethodAutofillFunctions.scaleAndTime
     }
 
     static pointAndTime(method, point) {
@@ -62,6 +64,10 @@ class MethodAutofillFunctions {
         const sy = Camera.current.scale.sy().toFixed(2);
 
         return `${method}(${x}, ${y}, ${sx}, ${sy}, "1s")`;
+    }
+
+    static scaleAndTime(method) {
+        return `${method}(0.7, 0.7, "1s")`
     }
 }
 
