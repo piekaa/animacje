@@ -43,9 +43,9 @@ class Mouse {
             if (event.button === 0) {
                 const mouseElement = document.getElementById("mouse");
                 mouseElement.value = `${wmx}, ${wmy}`;
-                mouseElement.select();
-                mouseElement.setSelectionRange(0, 20);
-                navigator.clipboard.writeText(mouseElement.value);
+                // mouseElement.select();
+                // mouseElement.setSelectionRange(0, 20);
+                // navigator.clipboard.writeText(mouseElement.value);
 
 
                 Mouse.leftDown = true;

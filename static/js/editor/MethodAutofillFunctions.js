@@ -28,8 +28,13 @@ class MethodAutofillFunctions {
         lookWait: MethodAutofillFunctions.look,
         lookSmooth: MethodAutofillFunctions.look,
         lookSmoothWait: MethodAutofillFunctions.look,
+        lookInit: MethodAutofillFunctions.lookInit,
         zoom: MethodAutofillFunctions.scaleAndTime,
-        zoomWait: MethodAutofillFunctions.scaleAndTime
+        zoomWait: MethodAutofillFunctions.scaleAndTime,
+        rotate: MethodAutofillFunctions.valueAndTime,
+        rotateWait: MethodAutofillFunctions.valueAndTime,
+        rotateSmooth: MethodAutofillFunctions.valueAndTime,
+        rotateSmoothWait: MethodAutofillFunctions.valueAndTime,
     }
 
     static pointAndTime(method, point) {
@@ -66,8 +71,22 @@ class MethodAutofillFunctions {
         return `${method}(${x}, ${y}, ${sx}, ${sy}, "1s")`;
     }
 
+    static lookInit(method) {
+        const x = Camera.current.position.x().toFixed(2);
+        const y = Camera.current.position.y().toFixed(2);
+
+        const sx = Camera.current.scale.sx().toFixed(2);
+        const sy = Camera.current.scale.sy().toFixed(2);
+
+        return `${method}(${x}, ${y}, ${sx}, ${sy})`;
+    }
+
     static scaleAndTime(method) {
         return `${method}(0.7, 0.7, "1s")`
+    }
+
+    static valueAndTime(method) {
+        return `${method}(180, "1s")`
     }
 }
 

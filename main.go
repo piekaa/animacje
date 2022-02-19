@@ -1,10 +1,12 @@
 package main
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"io"
+	"net/http"
 	"os"
 	"time"
 )
@@ -12,26 +14,100 @@ import (
 func main() {
 	e := echo.New()
 	e.Use(middleware.Recover())
+
 	e.Static("/", "static")
 
-	e.POST("backup/:name", Backup)
+	e.File(":any", "static/index.html")
+
+	e.POST("api/backup/:name", Backup)
+
+	e.POST("api/image/:project/:imageName", PostUpload)
 
 	e.Logger.Fatal(e.Start(":6813"))
 }
 
+type codeFile struct {
+	Name    string `json:"name"`
+	Content string `json:"content"`
+	Init    bool   `json:"init"`
+}
+
 func Backup(c echo.Context) error {
 	name := c.Param("name")
-	buffer := new(bytes.Buffer)
-	buffer.ReadFrom(c.Request().Body)
-	bodyString := buffer.String()
+
+	var files []codeFile
+
+	err := c.Bind(&files)
+
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
 	t := time.Now().Unix() / 60
-	os.WriteFile(fmt.Sprintf("backup/%s%d.json", name, t), []byte(bodyString), 777)
+
+	fileBytes, err := os.ReadFile(fmt.Sprintf("backup/%s.json", name))
+
+	var m map[int64][]codeFile
+
+	if err != nil {
+		m = make(map[int64][]codeFile)
+	} else {
+		err = json.Unmarshal(fileBytes, &m)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+	}
+
+	m[t] = files
+
+	fileJson, err := json.Marshal(m)
+
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	err = os.WriteFile(fmt.Sprintf("backup/%s.json", name), fileJson, 0777)
+
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
 	return c.String(200, "")
 }
 
-// todo jest jakiś bug w plikach, init z Animations zapisało się jako pierwszy z definitions, może jak się przełączy i coś tam zrobi to tak się dzieje
+func PostUpload(c echo.Context) error {
 
-// todo definicje w podpowiedziach od razu, a nie po restarcie
+	project := c.Param("project")
+	fileName := c.Param("imageName")
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		return err
+	}
+	from, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer from.Close()
+
+	// Destination
+	to, err := os.Create("static/img/" + project + "_" + fileName)
+	if err != nil {
+		return err
+	}
+	defer to.Close()
+
+	// Copy
+	if _, err = io.Copy(to, from); err != nil {
+		return err
+	}
+
+	return c.String(http.StatusOK, fileName)
+}
 
 // todo variable hints i type hints do jednego, potem dodać methodHints
 

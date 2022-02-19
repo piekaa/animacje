@@ -35,7 +35,7 @@ class TexturedRenderable extends Renderable {
 
             TexturedRenderable.textures[path] = GL.createTextureForImage(img);
             this.texture = TexturedRenderable.textures[path];
-            onload(img);
+            onload?.(img);
             this.visible = true;
         }
         img.src = path;

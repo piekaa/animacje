@@ -7,9 +7,10 @@ import FileStorage from "./files/FileStorage.js";
 import DefinitionPostCompiler from "./definitions/DefinitionPostCompiler.js";
 import Hints from "./editor/Hints.js";
 import Camera from "./Camera.js";
+import DragAndDropImages from "./files/DragAndDropImages.js";
 
 let animationFiles = new Files(true, new FileStorage(), {onLoad: compileAnimation});
-let definitionFiles = new Files(false, new FileStorage("__definitions"), {
+let definitionFiles = new Files(false, new FileStorage("definitions"), {
     onLoad: () => {
         animationFiles.start();
         Hints.start(compile)
@@ -80,6 +81,7 @@ progress.oninput = (event) => {
 
 document.getElementById("play").onclick = () => {
     let frame = parseInt(lastProgressFrame) < parseInt(progress.max) ? lastProgressFrame : 0;
+    frame = Math.max(frame, 0);
     // document.getElementById("canvas").requestFullscreen();
 
     pause();
@@ -121,7 +123,7 @@ document.getElementById("definitionsTab").onclick = (event) => {
     tab = "definitions";
     definitionFiles.stop();
     animationFiles.stop();
-    definitionFiles = new Files(false, new FileStorage("__definitions"), {onFileSelect: compileDefinition});
+    definitionFiles = new Files(false, new FileStorage("definitions"), {onFileSelect: compileDefinition});
     definitionFiles.start();
     pivot.visible = true;
 };
@@ -129,3 +131,74 @@ document.getElementById("definitionsTab").onclick = (event) => {
 document.getElementById("cameraReset").onclick = () => {
     new Camera();
 }
+
+let encoder;
+
+async function getEncoder() {
+    encoder = await HME.createH264MP4Encoder();
+}
+
+getEncoder();
+
+let renderBehaviourId;
+
+
+const download = (url, filename) => {
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename || "download";
+    anchor.click();
+};
+
+
+document.getElementById("render").onclick = () => {
+    console.log(encoder);
+
+    const context = document.getElementById("canvas").getContext("webgl");
+
+    encoder.width = 1920;
+    encoder.height = 1080;
+    // encoder.temporalDenoise = true;
+    encoder.quantizationParameter = 10;
+    encoder.initialize();
+
+
+    let frame = 0;
+
+    let debugFrame = -1;
+
+    PiekoszekEngine.flipCamera = true;
+
+    renderBehaviourId = PiekoszekEngine.addBehaviourAfterRender(() => {
+
+        debugFrame++;
+
+        let pixels = new Uint8Array(encoder.width * encoder.height * 4);
+        context.readPixels(0, 0, encoder.width, encoder.height, context.RGBA, context.UNSIGNED_BYTE, pixels);
+
+        encoder.addFrameRgba(pixels);
+
+
+        if (frame <= progress.max) {
+            progress.value = frame;
+            progress.oninput({
+                target: {
+                    value: frame
+                }
+            });
+        } else {
+            encoder.finalize();
+            const uint8Array = encoder.FS.readFile(encoder.outputFilename);
+            download(URL.createObjectURL(new Blob([uint8Array], {type: "video/mp4"})));
+            encoder.delete();
+            PiekoszekEngine.flipCamera = false;
+            PiekoszekEngine.removeBehaviourAfterRender(renderBehaviourId);
+        }
+
+        frame++;
+    });
+
+
+}
+
+DragAndDropImages.initialize();

@@ -24,6 +24,11 @@ class Camera extends AnimatedRenderable {
         return matrix;
     }
 
+    lookInit(x, y, sx, sy) {
+        this.setPosition(x, y);
+        this.setScale(sx, sy);
+    }
+
     setPosition(x, y, ignoreLock = false) {
         if (document.getElementById("lockCamera").checked && !ignoreLock) {
             return;

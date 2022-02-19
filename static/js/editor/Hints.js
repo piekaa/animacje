@@ -47,15 +47,22 @@ class Hints {
                 "lookWait",
                 "lookSmooth",
                 "lookSmoothWait",
+                "lookInit",
                 "zoom",
                 "zoomWait",
+                "rotate",
+                "rotateWait",
+                "rotateSmooth",
+                "rotateSmoothWait"
             ], Hints.destroyCallback).instance;
         },
         "line": PointHints.lineHints,
+        "square": PointHints.customTypeHints,
         "curve": PointHints.curveHints,
         "text": PointHints.textHints,
         "textBox": PointHints.textBoxHints,
         "dialog": PointHints.dialogHints,
+        "image": PointHints.imageHints,
         "customType": PointHints.customTypeHints,
         "call": PointHints.callHints,
         "": () => {
@@ -73,6 +80,10 @@ class Hints {
             reg: /.*= *line *\(.*\)/,
         },
         {
+            context: "square",
+            reg: /.*= *square *\(.*\)/,
+        },
+        {
             context: "curve",
             reg: /.*= *curve *\(.*\)/,
         },
@@ -87,6 +98,10 @@ class Hints {
         {
             context: "dialog",
             reg: /.*= *dialog *\(.*\)/,
+        },
+        {
+            context: "image",
+            reg: /.*= *image *\(.*\)/,
         },
         {
             context: "type",

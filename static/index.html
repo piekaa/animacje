@@ -11,13 +11,18 @@
         .hd {
             margin-top: 16px;
             width: 95%;
-            height: 50vh;
+            /*height: 50vh;*/
             resize: horizontal;
         }
 
         canvas {
             width: 100%;
-            padding-bottom: 56.25%;
+            /*padding-bottom: 56.25%;*/
+        }
+
+        canvas:fullscreen {
+            height: 100vh;
+            cursor: none;
         }
 
         textarea {
@@ -137,12 +142,34 @@
             width: 50%;
         }
 
+        .player-panel button {
+            margin-top: 8px;
+        }
+
         .editor {
             width: 50%;
             display: flex;
             justify-content: space-between;
             align-items: stretch;
             margin-bottom: 16px;
+        }
+
+        .images {
+            height: 200px;
+            margin-top: 16px;
+            /*border: 1px solid black;*/
+            display: grid;
+            grid-template:
+                "a b c d"
+                "e f g h";
+        }
+
+        .image-container {
+            margin: 2px;
+            border: dotted 1px black;
+             background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
 
@@ -184,15 +211,30 @@
                 <button id="compiler">Compile</button>
             </div>
 
+            <div class="hd">
+                <canvas id="canvas" width="1920" height="1080" oncontextmenu="return false;"></canvas>
+            </div>
+
+
             <div class="player">
                 <button id="play">Play</button>
                 <button id="pause">Pause</button>
                 <input id="progress" class="progress" type="range">
             </div>
 
-            <div class="hd">
-                <canvas id="canvas" width="1920" height="1080" oncontextmenu="return false;"></canvas>
+            <button id="render">Render</button>
+
+            <div id="images" class="images">
+                <div class="image-container"></div>
+                <div class="image-container"></div>
+                <div class="image-container"></div>
+                <div class="image-container"></div>
+                <div class="image-container"></div>
+                <div class="image-container"></div>
+                <div class="image-container"></div>
+                <div class="image-container"></div>
             </div>
+
         </div>
     </div>
 
@@ -202,6 +244,9 @@
 </body>
 
 <script type="module" src="js/main.js">
+</script>
+
+<script src="https://unpkg.com/h264-mp4-encoder/embuild/dist/h264-mp4-encoder.web.js">
 </script>
 
 </html>

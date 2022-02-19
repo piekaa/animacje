@@ -7,6 +7,8 @@ class AutofillFunctions {
         "line": AutofillFunctions.#line,
         "curve": AutofillFunctions.#curve,
         "text": AutofillFunctions.#text,
+        "dialog": AutofillFunctions.#dialog,
+        "image": AutofillFunctions.#image,
         "customType": AutofillFunctions.#customType,
         "method": AutofillFunctions.#method
     }
@@ -19,6 +21,16 @@ class AutofillFunctions {
     static #text() {
         const tp = AutofillFunctions.#translatedPoint;
         return `text("abc", ${tp(100, 100)})`;
+    }
+
+    static #dialog() {
+        const tp = AutofillFunctions.#translatedPoint;
+        return `dialog("abc", ${tp(100, 100)})`;
+    }
+
+    static #image() {
+        const tp = AutofillFunctions.#translatedPoint;
+        return `image("0", ${tp(100, 100)}, 1, 1)`;
     }
 
     static #curve() {

@@ -33,6 +33,10 @@ class Dialog extends AnimatedRenderable {
         return false;
     }
 
+    setColor(r = 1, g = 1, b = 1, a = 1) {
+        super.setColor(r, g, b, a);
+        this.children.forEach(c => c.setColor(r, g, b, a));
+    }
 
 }
 

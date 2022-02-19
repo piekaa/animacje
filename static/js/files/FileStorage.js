@@ -1,20 +1,23 @@
+import Names from "./Names.js";
+
 class FileStorage {
 
-    #project
+    #section
 
-    constructor(project = "main") {
-        this.#project = project;
+    constructor(section = "main") {
+        section = Names.project() + "_" + section;
+        this.#section = section;
     }
 
     load() {
         return new Promise(resolve => {
-            resolve(JSON.parse(localStorage.getItem(this.#project)) || []);
+            resolve(JSON.parse(localStorage.getItem(this.#section)) || []);
         });
     }
 
     save(files) {
 
-        fetch(`/backup/${this.#project}`, {
+        fetch(`/api/backup/${this.#section}`, {
             method: "post",
             headers: {
                 "Content-Type": "application/json"
@@ -22,7 +25,7 @@ class FileStorage {
             body: JSON.stringify(files)
         });
 
-        localStorage.setItem(this.#project, JSON.stringify(files));
+        localStorage.setItem(this.#section, JSON.stringify(files));
     }
 }
 

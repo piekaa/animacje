@@ -11,6 +11,7 @@ import Zoom from "./Zoom.js";
 import FadeOut from "./FadeOut.js";
 import Color from "./Color.js";
 import Rotate from "./Rotate.js";
+import Look from "./Look.js";
 
 // todo implement start(frame) in all animations
 
@@ -37,8 +38,9 @@ class Animator {
     }
 
     lookSmooth(obj, x, y, sx, sy, time) {
-        this.moveSmooth(obj, x, y, time);
-        this.zoomSmooth(obj, sx, sy, time); // zoom smooth??
+        this.look(obj, x, y, sx, sy, time, new SmoothInterpolator());
+        // this.moveSmooth(obj, x, y, time);
+        // this.zoomSmooth(obj, sx, sy, time); // zoom smooth??
     }
 
     lookWait(obj, x, y, sx, sy, time) {
@@ -46,17 +48,24 @@ class Animator {
         this.wait(time);
     }
 
-    look(obj, x, y, sx, sy, time) {
-        this.move(obj, x, y, time);
-        this.zoom(obj, sx, sy, time);
+    look(obj, x, y, sx, sy, time, interpolator) {
+        // this.move(obj, x, y, time);
+        // this.zoom(obj, sx, sy, time);
+        this.#look(obj, x, y, sx, sy, time, interpolator);
+
     }
 
-    wait(time) {
-        const toSkip = this.#timeToFrames(time);
-        for (let i = 0; i < toSkip; i++) {
-            this.updateFrame();
-        }
+
+    #look(obj, x, y, sx, sy, time, interpolator) {
+        this.#initObjectIfNew(obj);
+        const framesDuration = this.#timeToFrames(time);
+        this.lastFrame = Math.max(this.lastFrame, this.frame + framesDuration);
+        const look = new Look(obj, x, y, sx, framesDuration, interpolator);
+        this.allActions.add(look);
+        look.start(this.frame);
+        this.#addToDoAtFrame(look);
     }
+
 
     // Z TYM UWAZAC
     call(obj, fun, ...params) {
@@ -268,6 +277,13 @@ class Animator {
         color.start(this.frame);
         this.allActions.add(color);
         this.#addToDoAtFrame(color);
+    }
+
+    wait(time) {
+        const toSkip = this.#timeToFrames(time);
+        for (let i = 0; i < toSkip; i++) {
+            this.updateFrame();
+        }
     }
 
     #initObjectIfNew(obj) {

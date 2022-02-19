@@ -36,6 +36,11 @@ class PointHints {
         PointHints.#currentHintPoints = new HintPoints(data, 1, DragUpdateFunctions.textAndPoint, HintsGlobals.compileFunction, 1);
     }
 
+    static imageHints() {
+        const data = CodeAnalysis.inputContextData();
+        PointHints.#currentHintPoints = new HintPoints(data, 1, DragUpdateFunctions.textAndPoint, HintsGlobals.compileFunction, 1);
+    }
+
     static customTypeHints() {
         const data = CodeAnalysis.inputContextData();
         PointHints.#currentHintPoints = new HintPoints(data, 1, DragUpdateFunctions.pointAndCustomArgs, HintsGlobals.compileFunction);

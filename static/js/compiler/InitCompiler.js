@@ -9,6 +9,7 @@ import Dialog from "../primitives/Dialog.js";
 import Text from "../primitives/Text.js";
 import Regexps from "../editor/Regexps.js";
 import Utils from "../utils/Utils.js";
+import Image from "../primitives/Image.js";
 
 // todo wykrywanie cyklicznych zależności
 // todo nadpisywanie zmiennych
@@ -21,7 +22,8 @@ class InitCompiler {
         "curve": Curve,
         "textBox": TextBox,
         "text": Text,
-        "dialog": Dialog
+        "dialog": Dialog,
+        "image": Image
     };
 
     static #definitions = {};

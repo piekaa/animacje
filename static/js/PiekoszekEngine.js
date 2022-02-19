@@ -15,12 +15,16 @@ class PiekoszekEngine {
     //todo think of way to remove behaviours
     static behaviours = [];
     static behavioursAfterTransformation = [];
+    static behavioursAfterRender = [];
+
 
     static renderablesToRemove = []
 
     static protectedRenderables = [];
 
     static canvas;
+
+    static flipCamera = false;
 
     static root() {
         return this.rootRenderable;
@@ -75,22 +79,28 @@ class PiekoszekEngine {
         PiekoszekEngine.renderablesToRemove.push(renderable);
     }
 
-    //todo remove behaviour
     static addBehaviour(behaviourFunction) {
-        return PiekoszekEngine.behaviours.push(behaviourFunction) -1;
+        return PiekoszekEngine.behaviours.push(behaviourFunction) - 1;
     }
 
-    //todo remove behaviour
     static addBehaviourAfterTransformation(behaviourFunction) {
-        return PiekoszekEngine.behavioursAfterTransformation.push(behaviourFunction) -1;
+        return PiekoszekEngine.behavioursAfterTransformation.push(behaviourFunction) - 1;
+    }
+
+    static addBehaviourAfterRender(behaviourFunction) {
+        return PiekoszekEngine.behavioursAfterRender.push(behaviourFunction) - 1;
     }
 
     static removeBehaviour(id) {
         PiekoszekEngine.behaviours[id] = undefined;
     }
 
-    static BehaviourAfterTransformation(id) {
+    static removeBehaviourAfterTransformation(id) {
         PiekoszekEngine.behavioursAfterTransformation[id] = undefined;
+    }
+
+    static removeBehaviourAfterRender(id) {
+        PiekoszekEngine.behavioursAfterRender[id] = undefined;
     }
 
     static #update() {
@@ -122,9 +132,16 @@ class PiekoszekEngine {
             width: PiekoszekEngine.width,
             height: PiekoszekEngine.height
         }
+
+        if (PiekoszekEngine.flipCamera) {
+            Camera.current.setScale(Camera.current.scale.sx(), -Camera.current.scale.sy());
+        }
+
         const screen = Matrix2D.Scale(2 / rect.width, 2 / rect.height).multiply(Matrix2D.Translation(-rect.width / 2, -rect.height / 2));
         const view = screen.multiply(Camera.current.matrix(rect));
         renderables.forEach(r => r.render(view.float32array()));
+
+        PiekoszekEngine.behavioursAfterRender.forEach(b => b?.());
 
         PiekoszekEngine.renderablesToRemove.forEach(toRemove => {
             toRemove.parent.children = toRemove.parent.children.filter(r => r.getId() !== toRemove.getId());
