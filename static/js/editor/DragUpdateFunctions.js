@@ -23,7 +23,10 @@ class DragUpdateFunctions {
 
     static textAndPoint(textSoFar, points) {
         let coordinates = `${points[0].position.x()}, ${points[0].position.y()}`;
-        return textSoFar.replace(Regexps.point, coordinates);
+        return textSoFar.replace(Regexps.varAndPoint,
+            (match, text) => {
+                return `(${text}, ${coordinates}`;
+            });
     }
 
     static textAndPointWidthHeight(textSoFar, points) {

@@ -17,7 +17,7 @@ func main() {
 
 	e.Static("/", "static")
 
-	e.File(":any", "static/index.html")
+	//e.File("/", "static/index.html")
 
 	e.POST("api/backup/:name", Backup)
 
@@ -112,3 +112,5 @@ func PostUpload(c echo.Context) error {
 // todo variable hints i type hints do jednego, potem dodać methodHints
 
 // todo line move czy set position źle działa
+
+// todo argumenty customowych typów i argument z przekazywaniem koloru

@@ -9,7 +9,8 @@ import Hints from "./editor/Hints.js";
 import Camera from "./Camera.js";
 import DragAndDropImages from "./files/DragAndDropImages.js";
 
-let animationFiles = new Files(true, new FileStorage(), {onLoad: compileAnimation});
+// let animationFiles = new Files(true, new FileStorage(), {onLoad: compileAnimation});
+let animationFiles = new Files(true, new FileStorage(), {});
 let definitionFiles = new Files(false, new FileStorage("definitions"), {
     onLoad: () => {
         animationFiles.start();

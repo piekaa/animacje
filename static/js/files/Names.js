@@ -1,7 +1,8 @@
 class Names {
 
     static project() {
-        return window.location.pathname.slice(1);
+        const params = new URLSearchParams(window.location.search);
+        return params.get("p");
     }
 
 }
