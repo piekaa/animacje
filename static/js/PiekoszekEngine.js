@@ -133,10 +133,18 @@ class PiekoszekEngine {
             height: PiekoszekEngine.height
         }
 
+
+        if (PiekoszekEngine.flipCamera) {
+            Camera.current.setScale(Camera.current.scale.sx(), -Camera.current.scale.sy());
+        }
+
         const screen = Matrix2D.Scale(2 / rect.width, 2 / rect.height).multiply(Matrix2D.Translation(-rect.width / 2, -rect.height / 2));
-        const view = PiekoszekEngine.flipCamera
-            ? screen.multiply(Camera.current.matrix(rect).multiply(Matrix2D.Scale(1, -1)))
-            : screen.multiply(Camera.current.matrix(rect));
+        const view = screen.multiply(Camera.current.matrix(rect));
+
+        if (PiekoszekEngine.flipCamera) {
+            Camera.current.setScale(Camera.current.scale.sx(), -Camera.current.scale.sy());
+        }
+
         renderables.forEach(r => r.render(view.float32array()));
 
         PiekoszekEngine.behavioursAfterRender.forEach(b => b?.());

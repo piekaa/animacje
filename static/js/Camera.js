@@ -16,6 +16,7 @@ class Camera extends AnimatedRenderable {
     matrix(rect) {
         const matrix = Matrix2D.Translation(rect.width / 2, rect.height / 2)
             .multiply(this.scale)
+            .multiply(this.rotation)
             .multiply(Matrix2D.Translation(-rect.width / 2, -rect.height / 2))
             .multiply(this.position.minusXY());
 
