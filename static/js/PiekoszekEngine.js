@@ -133,7 +133,6 @@ class PiekoszekEngine {
             height: PiekoszekEngine.height
         }
 
-
         if (PiekoszekEngine.flipCamera) {
             Camera.current.setScale(Camera.current.scale.sx(), -Camera.current.scale.sy());
         }
